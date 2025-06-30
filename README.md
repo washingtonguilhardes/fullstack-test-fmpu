@@ -149,7 +149,7 @@ This `Turborepo` already configured useful commands for all your apps and packag
 
 ```bash
 # Will build all the app & packages with the supported `build` script.
-pnpm run build
+yarn run build
 
 # ℹ️ If you plan to only build apps individually,
 # Please make sure you've built the packages first.
@@ -159,17 +159,17 @@ pnpm run build
 
 ```bash
 # Will run the development server for all the app & packages with the supported `dev` script.
-pnpm run dev
+yarn run dev
 ```
 
 #### test
 
 ```bash
 # Will launch a test suites for all the app & packages with the supported `test` script.
-pnpm run test
+yarn run test
 
 # You can launch e2e testes with `test:e2e`
-pnpm run test:e2e
+yarn run test:e2e
 
 # See `@driveapp/jest-config` to customize the behavior.
 ```
@@ -179,7 +179,7 @@ pnpm run test:e2e
 ```bash
 # Will lint all the app & packages with the supported `lint` script.
 # See `@driveapp/eslint-config` to customize the behavior.
-pnpm run lint
+yarn run lint
 ```
 
 #### Format
@@ -187,7 +187,7 @@ pnpm run lint
 ```bash
 # Will format all the supported `.ts,.js,json,.tsx,.jsx` files.
 # See `@driveapp/eslint-config/prettier-base.js` to customize the behavior.
-pnpm format
+yarn format
 ```
 
 ### Remote Caching
