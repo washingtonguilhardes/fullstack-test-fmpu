@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "EditorConfig.EditorConfig",
+    "IronGeek.vscode-env",
+    "mattpocock.ts-error-translator",
+    "ms-azuretools.vscode-docker"
+  ],
+  "unwantedRecommendations": []
+}

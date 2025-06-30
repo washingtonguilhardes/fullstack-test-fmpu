@@ -1,0 +1,12 @@
+# debug-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: curl-debug
+  namespace: driveapp
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:latest
+      command: ['sleep', '3600']
+  restartPolicy: Never

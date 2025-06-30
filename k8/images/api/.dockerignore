@@ -1,0 +1,35 @@
+# Ignora node_modules em qualquer nível
+**/node_modules
+node_modules
+
+# Ignora arquivos de build e temporários
+dist
+.turbo
+out
+npm-debug.log
+.next
+**/.next
+
+# Ignora pastas específicas
+.git
+.gitignore
+k8
+
+# Ignora arquivos de ambiente
+.env
+.env.*
+.env.local
+.env.development.local
+
+# Ignora artefatos gerados
+generated
+node_modules
+**/generated
+
+
+node_modules
+dist
+.prisma
+**/node_modules
+**/dist
+**/.prisma

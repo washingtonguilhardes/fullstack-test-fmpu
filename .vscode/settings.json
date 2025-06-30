@@ -1,0 +1,102 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js, ${capture}.spec.ts, ${capture}.test.ts, ${capture}.d.ts",
+    "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+    "*.jsx": "${capture}.js",
+    "*.tsx": "${capture}.jsx, ${capture}.spec.tsx, ${capture}.test.tsx, ${capture}.props.ts, ${capture}.styles.ts, ${capture}.style.ts, ${capture}.component.tsx, ${capture}.styles.tsx, ${capture}.config.ts, ${capture}.utils.ts",
+    "tsconfig.json": "tsconfig.*.json",
+    "package.json": "package-lock.json, yarn.lock",
+    ".env": ".env.*",
+    "README.md": "*.md",
+    "*.component.tsx": "${capture}.jsx, ${capture}.spec.tsx, ${capture}.test.tsx, ${capture}.props.ts, ${capture}.styles.tsx, ${capture}.config.ts, ${capture}.utils.ts , ${capture}.scss"
+  },
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.autoIndent": "full",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": false,
+  "editor.linkedEditing": true,
+  "editor.renderWhitespace": "boundary",
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "json"
+  ],
+  "files.autoSave": "off",
+  "files.encoding": "utf8",
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.expo": true,
+    "**/.git": true,
+    "**/.hg": true,
+    "**/.svn": true,
+    "**/CVS": true
+  },
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.watcherExclude": {
+    "**/*.spec.ts": true,
+    "**/.expo/*/**": true,
+    "**/.git/objects/*/**": true,
+    "**/.git/subtree-cache/*/**": true,
+    "**/android/*/**": true,
+    "**/bower_components/*/**": true,
+    "**/ios/*/**": true,
+    "**/lib/*/**": true,
+    "**/node_modules/*/**": true
+  },
+  "html.format.enable": false,
+  "javascript.format.enable": false,
+  "javascript.validate.enable": true,
+  "json.format.enable": false,
+  "search.useIgnoreFiles": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.list.smoothScrolling": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.associations": {
+    "*.ts": "typescript",
+    "*.snap": "jest-snapshot"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": false
+  },
+
+  "appService.defaultWebAppToDeploy": "/subscriptions/3d66c3b0-2692-44d9-a3c7-d42d7bfb6df9/resourceGroups/rg-see-pbihub/providers/Microsoft.Web/sites/pbihubfeprod",
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}",
+    "Dockerfile",
+    ".env",
+    ".next"
+  ],
+  "appService.deploySubpath": "."
+}

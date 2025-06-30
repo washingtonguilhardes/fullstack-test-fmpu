@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+const crypto = require('crypto');
+
+function generatePassword(length = 12) {
+  const buffer = crypto.randomBytes(length);
+  const password = buffer.toString('base64').slice(0, length).replace(/\+/g, 'A').replace(/\//g, 'B');
+  return password;
+}
+
+const args = process.argv.slice(2);
+const passwordLength = args[0] ? parseInt(args[0]) : undefined;
+
+if (passwordLength && (isNaN(passwordLength) || passwordLength <= 0)) {
+  console.error('Error: Invalid password length. Please provide a positive number.');
+  process.exit(1);
+}
+
+const password = generatePassword(passwordLength);
+console.log('Generated Password:', password);

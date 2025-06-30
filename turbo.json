@@ -1,0 +1,29 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local", "**/.env"],
+  "globalEnv": ["DRIVEAPP_API_URL_INTERNAL"],
+  "tasks": {
+    "dev": {
+      "inputs": ["**/.env.*local", "**/.env", "$TURBO_DEFAULT$"],
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "public/dist/**",
+        "generated/**"
+      ]
+    },
+    "generate": {
+      "dependsOn": ["^generate"],
+      "cache": false
+    },
+    "lint": {},
+    "test": {},
+    "test:e2e": {}
+  }
+}
