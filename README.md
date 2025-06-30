@@ -1,3 +1,7 @@
+# Drive App
+
+Db Digram [here](https://dbdiagram.io/d/DRIVEAPP_DB_STRUCTURE-6862cb32f413ba35089387ac)
+
 # Coding Challenge: File and Media Management Platform with Upload
 
 ## Project Objective

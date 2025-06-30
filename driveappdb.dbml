@@ -1,3 +1,243 @@
 Project Driveapp {
     database_type: 'PostgreSQL'
+    Note: '''
+    # DriveApp Database Schema
+
+    A file and media management platform database structure supporting:
+    - User authentication and authorization
+    - File upload and management
+    - Folder organization (hierarchical)
+    - Secure file access with temporary URLs
+    - File metadata tracking
+
+    ## Key Features
+    - JWT-based authentication
+    - Cloud storage integration (Azure Blob Storage preferred)
+    - File type validation and size limits
+    - Hierarchical folder structure
+    - Secure file access URLs with expiration
+    '''
+}
+
+// ========================================
+// USER MANAGEMENT
+// ========================================
+
+Table users {
+    id uuid [primary key, default: `gen_random_uuid()`]
+    email varchar(255) [not null, unique, note: 'User email for authentication']
+    password_hash varchar(255) [not null, note: 'Hashed password using bcrypt']
+    full_name varchar(255) [not null, note: 'User full name']
+    avatar_url varchar(500) [note: 'Optional avatar image URL']
+    is_active boolean [not null, default: true, note: 'Account status']
+    email_verified boolean [not null, default: false, note: 'Email verification status']
+    last_login_at timestamp [note: 'Last login timestamp']
+    created_at timestamp [not null, default: `now()`]
+    updated_at timestamp [not null, default: `now()`]
+
+    indexes {
+        email [unique]
+        created_at [name: 'idx_users_created_at']
+    }
+
+    Note: 'Stores user account information and authentication data'
+}
+
+Table user_sessions {
+    id uuid [primary key, default: `gen_random_uuid()`]
+    user_id uuid [not null, ref: > users.id]
+    token_hash varchar(255) [not null, note: 'Hashed JWT token']
+    expires_at timestamp [not null, note: 'Token expiration time']
+    ip_address inet [note: 'IP address of the session']
+    user_agent text [note: 'Browser/user agent information']
+    is_active boolean [not null, default: true, note: 'Session status']
+    created_at timestamp [not null, default: `now()`]
+
+    indexes {
+        user_id [name: 'idx_user_sessions_user_id']
+        token_hash [unique]
+        expires_at [name: 'idx_user_sessions_expires_at']
+    }
+
+    Note: 'Stores active user sessions for JWT token management'
+}
+
+// ========================================
+// FOLDER MANAGEMENT
+// ========================================
+
+Table folders {
+    id uuid [primary key, default: `gen_random_uuid()`]
+    name varchar(255) [not null, note: 'Folder name']
+    user_id uuid [not null, ref: > users.id]
+    parent_folder_id uuid [ref: > folders.id, note: 'Parent folder for hierarchical structure']
+    path text [not null, note: 'Full path from root (e.g., /Documents/Work)']
+    is_root boolean [not null, default: false, note: 'Whether this is a root folder']
+    created_at timestamp [not null, default: `now()`]
+    updated_at timestamp [not null, default: `now()`]
+
+    indexes {
+        user_id [name: 'idx_folders_user_id']
+        parent_folder_id [name: 'idx_folders_parent_id']
+        (user_id, path) [unique, name: 'idx_folders_user_path_unique']
+    }
+
+    Note: 'Stores folder structure with hierarchical organization per user'
+}
+
+// ========================================
+// FILE MANAGEMENT
+// ========================================
+
+Table files {
+    id uuid [primary key, default: `gen_random_uuid()`]
+    original_name varchar(500) [not null, note: 'Original file name as uploaded']
+    server_name varchar(255) [not null, note: 'Generated server-side file name']
+    mime_type varchar(100) [not null, note: 'File MIME type (e.g., image/jpeg)']
+    size bigint [not null, note: 'File size in bytes']
+    access_url text [note: 'Temporary access URL for file download']
+    access_url_expires_at timestamp [note: 'When the access URL expires']
+    user_id uuid [not null, ref: > users.id]
+    folder_id uuid [ref: > folders.id, note: 'Folder where file is located (optional)']
+    storage_path text [not null, note: 'Path in cloud storage (e.g., Azure Blob)']
+    storage_provider varchar(50) [not null, default: 'azure', note: 'Cloud storage provider']
+    checksum varchar(64) [note: 'File checksum for integrity verification']
+    is_public boolean [not null, default: false, note: 'Whether file is publicly accessible']
+    upload_date timestamp [not null, default: `now()`]
+    last_accessed_at timestamp [note: 'Last time file was accessed']
+    created_at timestamp [not null, default: `now()`]
+    updated_at timestamp [not null, default: `now()`]
+
+    indexes {
+        user_id [name: 'idx_files_user_id']
+        folder_id [name: 'idx_files_folder_id']
+        mime_type [name: 'idx_files_mime_type']
+        upload_date [name: 'idx_files_upload_date']
+        (user_id, original_name) [name: 'idx_files_user_original_name']
+    }
+
+    Note: 'Stores file metadata and cloud storage information'
+}
+
+// ========================================
+// FILE SHARING & ACCESS CONTROL
+// ========================================
+
+Table file_shares {
+    id uuid [primary key, default: `gen_random_uuid()`]
+    file_id uuid [not null, ref: > files.id]
+    shared_by_user_id uuid [not null, ref: > users.id, note: 'User who shared the file']
+    shared_with_user_id uuid [ref: > users.id, note: 'User with whom file is shared (optional)']
+    access_token varchar(255) [unique, note: 'Token for public access']
+    access_level varchar(20) [not null, default: 'read', note: 'read, write, admin']
+    expires_at timestamp [note: 'When the share expires']
+    is_active boolean [not null, default: true]
+    created_at timestamp [not null, default: `now()`]
+
+    indexes {
+        file_id [name: 'idx_file_shares_file_id']
+        shared_by_user_id [name: 'idx_file_shares_shared_by']
+        shared_with_user_id [name: 'idx_file_shares_shared_with']
+        access_token [unique]
+    }
+
+    Note: 'Manages file sharing between users and public access tokens'
+}
+
+// ========================================
+// UPLOAD TRACKING & RATE LIMITING
+// ========================================
+
+Table upload_sessions {
+    id uuid [primary key, default: `gen_random_uuid()`]
+    user_id uuid [not null, ref: > users.id]
+    session_token varchar(255) [unique, note: 'Upload session identifier']
+    total_files integer [not null, default: 0, note: 'Total files in this upload session']
+    uploaded_files integer [not null, default: 0, note: 'Files successfully uploaded']
+    total_size bigint [not null, default: 0, note: 'Total size of all files in bytes']
+    status varchar(20) [not null, default: 'active', note: 'active, completed, failed']
+    expires_at timestamp [not null, note: 'When the upload session expires']
+    created_at timestamp [not null, default: `now()`]
+    completed_at timestamp [note: 'When upload session was completed']
+
+    indexes {
+        user_id [name: 'idx_upload_sessions_user_id']
+        session_token [unique]
+        status [name: 'idx_upload_sessions_status']
+    }
+
+    Note: 'Tracks file upload sessions for progress monitoring and rate limiting'
+}
+
+// ========================================
+// AUDIT LOGGING
+// ========================================
+
+Table audit_logs {
+    id uuid [primary key, default: `gen_random_uuid()`]
+    user_id uuid [ref: > users.id, note: 'User who performed the action']
+    action varchar(50) [not null, note: 'Action performed (login, upload, delete, etc.)']
+    resource_type varchar(20) [not null, note: 'Type of resource (file, folder, user)']
+    resource_id uuid [note: 'ID of the affected resource']
+    details jsonb [note: 'Additional action details']
+    ip_address inet [note: 'IP address of the request']
+    user_agent text [note: 'Browser/user agent information']
+    created_at timestamp [not null, default: `now()`]
+
+    indexes {
+        user_id [name: 'idx_audit_logs_user_id']
+        action [name: 'idx_audit_logs_action']
+        resource_type [name: 'idx_audit_logs_resource_type']
+        created_at [name: 'idx_audit_logs_created_at']
+    }
+
+    Note: 'Audit trail for security and compliance tracking'
+}
+
+
+TableGroup user_management [color: #3498DB, note: 'User authentication and account management'] {
+    users
+    user_sessions
+}
+
+TableGroup file_management [color: #2ECC71, note: 'File storage and organization'] {
+    files
+    folders
+    file_shares
+}
+
+TableGroup system_tracking [color: #E74C3C, note: 'System monitoring and audit'] {
+    upload_sessions
+    audit_logs
+}
+
+// ========================================
+// NOTES
+// ========================================
+
+Note system_notes {
+'''
+## System Implementation Notes
+
+### Security Considerations
+- All passwords are hashed using bcrypt
+- JWT tokens are stored as hashes in user_sessions
+- File access URLs have expiration times
+- Audit logging for security compliance
+
+### Performance Optimizations
+- Indexes on frequently queried columns
+- Composite indexes for user-specific queries
+- Efficient folder hierarchy with path-based queries
+
+### Cloud Storage Integration
+- Supports multiple storage providers (Azure Blob Storage preferred)
+- File metadata stored in database, actual files in cloud
+- Checksum verification for file integrity
+
+### Scalability Features
+- UUID primary keys for distributed systems
+- JSONB for flexible audit logging
+- Efficient folder hierarchy with path-based queries
+'''
 }
