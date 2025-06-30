@@ -1,12 +1,11 @@
 
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 
-import { DriveappRestModule } from './base/driveapp-rest';
+import { DriveappRestModule } from './base/driveapp-rest/driveapp-rest.module';
+
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     DriveappRestModule,
   ],
   controllers: [],

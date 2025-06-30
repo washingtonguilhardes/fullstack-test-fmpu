@@ -14,6 +14,7 @@
     "generate": "turbo run generate",
     "reset": "turbo run reset",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "cleanup": "./scripts/cleanup.sh",
     "start:prod:adminpanel": "cd apps/adminpanelv2 && yarn start",
     "start:prod:api": "cd apps/api && yarn start"
   },

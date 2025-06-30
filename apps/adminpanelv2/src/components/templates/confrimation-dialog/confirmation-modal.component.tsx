@@ -1,7 +1,5 @@
-import { Copy } from 'lucide-react';
 import { PropsWithChildren, ReactNode } from 'react';
 
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -12,8 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 interface ConfirmationDialogProps {
   title: string;
   description: string;

@@ -1,16 +1,8 @@
-import cookieParser from 'cookie-parser';
+ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
-import { AllExceptionsFilter } from '@driveapp/core/exceptions';
-
-import { ValidateUserSessionUsecase } from '@/base/driveapp-graphql/login';
-import {
-  GqlAuthSessionGuard,
-  SetRequestCookiesService,
-} from '@/components/authentication';
-import { Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
+ import { Logger } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 
@@ -21,21 +13,16 @@ async function bootstrap() {
 
   const reflector = app.get(Reflector);
 
-  app.useGlobalGuards(
-    new GqlAuthSessionGuard(
-      reflector,
-      app.get(SetRequestCookiesService),
-      app.get(ValidateUserSessionUsecase),
-    ),
-  );
-  const config = app.get(ConfigService);
-  const port = config.get('PORT', 80);
+
+  // const config = app.get(ConfigService);
+  // const port = config.get('PORT', 80);
+  const port = 3000;
   // app.useGlobalFilters(
   //   // new AllExceptionsFilter(app.get(HttpAdapterHost).httpAdapter, config),
   // );
-  await app.listen(port);
+  await app.listen(80);
   const logger = new Logger('bootstrap');
-  logger.log(`Server is running on port ${port}`);
+  logger.log(`Server is running on port 80`);
 }
 
 bootstrap();

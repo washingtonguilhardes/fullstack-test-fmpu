@@ -1,8 +1,6 @@
-import { cookies, headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { NotFoundComponent } from './_components';
-import Layout from './d/layout';
 
 export default async function NotFound(props: {
   params: {
@@ -18,8 +16,8 @@ export default async function NotFound(props: {
   }
 
   return (
-    <Layout>
-      <NotFoundComponent />
-    </Layout>
+    <div>
+      <h1>Not Found</h1>
+    </div>
   );
 }

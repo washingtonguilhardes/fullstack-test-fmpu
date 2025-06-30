@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client';
 
 import { Bounce, ToastContainer } from 'react-toastify';
@@ -7,13 +6,10 @@ import { Geist, Geist_Mono } from 'next/font/google';
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { client } from '@/lib/apollo';
 import { muiTheme } from '@/lib/theme';
-import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider as MTRThemeProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 
-import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -41,8 +37,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              {/* @ts-ignore  TODO: fix this when updating to react 19 */}
-              <ApolloProvider client={client}>
+
                 <SidebarProvider
                   style={
                     {
@@ -53,7 +48,6 @@ export default function RootLayout({
                 >
                   {children}
                 </SidebarProvider>
-              </ApolloProvider>
               <ToastContainer
                 position="top-right"
                 autoClose={5000}

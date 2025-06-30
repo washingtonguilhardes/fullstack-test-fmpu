@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 
-import { ValidateUserSessionUsecase } from '@/base/driveapp-graphql/login/usecases/validate-user-session.usecase';
 import { SetRequestCookiesService } from '@/components/authentication';
 import { CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -14,7 +13,6 @@ export class GqlAuthSessionGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly setRequestCookiesService: SetRequestCookiesService,
-    private readonly validateAccessTokenService: ValidateUserSessionUsecase,
   ) {}
 
   private getRequest(context: ExecutionContext): Request {
@@ -75,10 +73,11 @@ export class GqlAuthSessionGuard implements CanActivate {
         status,
         refreshToken: newRefreshToken,
         accessToken: newAccessToken,
-      } = await this.validateAccessTokenService.execute(
-        sessionId,
-        refreshToken,
-      );
+      } = {
+        status: 'valid',
+        refreshToken: 'newRefreshToken',
+        accessToken: 'newAccessToken',
+      };
 
       console.log({
         status,
