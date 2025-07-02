@@ -1,165 +1,90 @@
 import {
-  FileAccess,
-  FileEntity,
-  FileStatus,
-  FileType,
-  FileVisibility
-} from '@driveapp/contracts/entities/files/file.entity';
+  ArtifactoryEntity,
+  ArtifactoryType
+} from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
 import { ArtifactListComponent } from './_components/artifact-list/artifact-list.component';
 
-const files: FileEntity[] = [
+const files: ArtifactoryEntity[] = [
   {
-    id: '1',
+    _id: '1',
     name: 'Documents',
-    type: FileType.FOLDER,
+    type: ArtifactoryType.FOLDER,
     path: 'documents',
     size: 0,
-    status: FileStatus.ACTIVE,
-    visibility: FileVisibility.PUBLIC,
-    access: FileAccess.READ,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    owner: {
-      id: '1',
-      email: 'test@test.com',
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: '1'
   },
   {
-    id: '2',
+    _id: '2',
     name: 'presentation.pdf',
-    type: FileType.FILE,
+    type: ArtifactoryType.FILE,
     path: 'documents/presentation.pdf',
     size: 2048576,
-    status: FileStatus.ACTIVE,
-    visibility: FileVisibility.PUBLIC,
-    access: FileAccess.READ,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    owner: {
-      id: '1',
-      email: 'test@test.com',
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: '1'
   },
   {
-    id: '3',
+    _id: '3',
     name: 'vacation-photo.jpg',
-    type: FileType.FILE,
+    type: ArtifactoryType.FILE,
     path: 'photos/vacation-photo.jpg',
     size: 3145728,
-    status: FileStatus.ACTIVE,
-    visibility: FileVisibility.PRIVATE,
-    access: FileAccess.READ,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    owner: {
-      id: '1',
-      email: 'test@test.com',
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: '1'
   },
   {
-    id: '4',
+    _id: '4',
     name: 'meeting-recording.mp4',
-    type: FileType.FILE,
+    type: ArtifactoryType.FILE,
     path: 'videos/meeting-recording.mp4',
     size: 52428800,
-    status: FileStatus.ACTIVE,
-    visibility: FileVisibility.PUBLIC,
-    access: FileAccess.READ,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    owner: {
-      id: '1',
-      email: 'test@test.com',
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: '1'
   },
   {
-    id: '5',
+    _id: '5',
     name: 'project-backup.zip',
-    type: FileType.FILE,
+    type: ArtifactoryType.FILE,
     path: 'backups/project-backup.zip',
     size: 104857600,
-    status: FileStatus.ARCHIVED,
-    visibility: FileVisibility.PRIVATE,
-    access: FileAccess.READ,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    owner: {
-      id: '1',
-      email: 'test@test.com',
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: '1'
   },
   {
-    id: '6',
+    _id: '6',
     name: 'podcast-episode.mp3',
-    type: FileType.FILE,
+    type: ArtifactoryType.FILE,
     path: 'audio/podcast-episode.mp3',
     size: 15728640,
-    status: FileStatus.ACTIVE,
-    visibility: FileVisibility.PUBLIC,
-    access: FileAccess.READ,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    owner: {
-      id: '1',
-      email: 'test@test.com',
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: '1'
   },
   {
-    id: '7',
+    _id: '7',
     name: 'Photos',
-    type: FileType.FOLDER,
+    type: ArtifactoryType.FOLDER,
     path: 'photos',
     size: 0,
-    status: FileStatus.ACTIVE,
-    visibility: FileVisibility.PUBLIC,
-    access: FileAccess.READ,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    owner: {
-      id: '1',
-      email: 'test@test.com',
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: '1'
   },
   {
-    id: '8',
+    _id: '8',
     name: 'report.docx',
-    type: FileType.FILE,
+    type: ArtifactoryType.FILE,
     path: 'documents/report.docx',
     size: 1048576,
-    status: FileStatus.ACTIVE,
-    visibility: FileVisibility.PRIVATE,
-    access: FileAccess.READ,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    owner: {
-      id: '1',
-      email: 'test@test.com',
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: '1'
   }
 ];
 

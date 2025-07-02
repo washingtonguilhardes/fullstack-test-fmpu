@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-import { FileEntity } from '@driveapp/contracts/entities/files/file.entity';
+import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
 export enum FileAction {
   RENAME = 'rename',
@@ -13,12 +13,12 @@ export enum FileAction {
 }
 
 interface FileActionContextType {
-  selectedFile: FileEntity | null;
+  selectedFile: ArtifactoryEntity | null;
   currentAction: FileAction | null;
   isActionOpen: boolean;
-  openAction: (action: FileAction, file: FileEntity) => void;
+  openAction: (action: FileAction, file: ArtifactoryEntity) => void;
   closeAction: () => void;
-  executeAction: (action: FileAction, file: FileEntity) => void;
+  executeAction: (action: FileAction, file: ArtifactoryEntity) => void;
 }
 
 const FileActionContext = createContext<FileActionContextType | undefined>(undefined);
@@ -28,11 +28,11 @@ interface FileActionProviderProps {
 }
 
 export function FileActionProvider({ children }: FileActionProviderProps) {
-  const [selectedFile, setSelectedFile] = useState<FileEntity | null>(null);
+  const [selectedFile, setSelectedFile] = useState<ArtifactoryEntity | null>(null);
   const [currentAction, setCurrentAction] = useState<FileAction | null>(null);
   const [isActionOpen, setIsActionOpen] = useState(false);
 
-  const openAction = (action: FileAction, file: FileEntity) => {
+  const openAction = (action: FileAction, file: ArtifactoryEntity) => {
     setSelectedFile(file);
     setCurrentAction(action);
     setIsActionOpen(true);
@@ -44,7 +44,7 @@ export function FileActionProvider({ children }: FileActionProviderProps) {
     setIsActionOpen(false);
   };
 
-  const executeAction = (action: FileAction, file: FileEntity) => {
+  const executeAction = (action: FileAction, file: ArtifactoryEntity) => {
     console.log(`Executing action: ${action} on file: ${file.name}`);
 
     // Here you would implement the actual action logic

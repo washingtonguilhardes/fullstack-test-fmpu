@@ -1,16 +1,19 @@
 import Link from 'next/link';
 
-import { FileEntity, FileType } from '@driveapp/contracts/entities/files/file.entity';
+import {
+  ArtifactoryEntity,
+  ArtifactoryType
+} from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
 import { Button } from '@/components/ui/button';
 
 import { FileIconComponent } from '../../shared';
 
-export function TriggerComponent(props: { file: FileEntity }) {
+export function TriggerComponent(props: { file: ArtifactoryEntity }) {
   const { file } = props;
   const { path, name, type } = file;
 
-  const isFolder = type === FileType.FOLDER;
+  const isFolder = type === ArtifactoryType.FOLDER;
 
   if (isFolder) {
     return (

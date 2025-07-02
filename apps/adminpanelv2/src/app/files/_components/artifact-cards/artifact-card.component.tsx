@@ -4,20 +4,22 @@ import { format } from 'date-fns';
 
 import Link from 'next/link';
 
-import { FileEntity, FileType } from '@driveapp/contracts/entities/files/file.entity';
+import {
+  ArtifactoryEntity,
+  ArtifactoryType
+} from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { FileIconComponent, FileActionsDropdownComponent } from '../shared';
+import { FileActionsDropdownComponent, FileIconComponent } from '../shared';
 
 interface ArtifactCardComponentProps {
-  file: FileEntity;
+  file: ArtifactoryEntity;
 }
 
 export function ArtifactCardComponent({ file }: ArtifactCardComponentProps) {
-  const { name, path, type, size, status, visibility, createdAt } = file;
-  const isFolder = type === FileType.FOLDER;
+  const { name, path, type, size, created_at: createdAt } = file;
+  const isFolder = type === ArtifactoryType.FOLDER;
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -27,29 +29,29 @@ export function ArtifactCardComponent({ file }: ArtifactCardComponentProps) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const getStatusColor = () => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'deleted':
-        return 'bg-red-100 text-red-800';
-      case 'archived':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  // const getStatusColor = () => {
+  //   switch (status) {
+  //     case 'active':
+  //       return 'bg-green-100 text-green-800';
+  //     case 'deleted':
+  //       return 'bg-red-100 text-red-800';
+  //     case 'archived':
+  //       return 'bg-yellow-100 text-yellow-800';
+  //     default:
+  //       return 'bg-gray-100 text-gray-800';
+  //   }
+  // };
 
-  const getVisibilityColor = () => {
-    switch (visibility) {
-      case 'public':
-        return 'bg-blue-100 text-blue-800';
-      case 'private':
-        return 'bg-gray-100 text-gray-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  // const getVisibilityColor = () => {
+  //   switch (visibility) {
+  //     case 'public':
+  //       return 'bg-blue-100 text-blue-800';
+  //     case 'private':
+  //       return 'bg-gray-100 text-gray-800';
+  //     default:
+  //       return 'bg-gray-100 text-gray-800';
+  //   }
+  // };
 
   return (
     <Card className="group hover:shadow-md transition-shadow duration-200 cursor-pointer">
@@ -76,17 +78,17 @@ export function ArtifactCardComponent({ file }: ArtifactCardComponentProps) {
       <CardContent className="pt-0">
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs text-gray-500">
-            <span>Size: {isFolder ? '--' : formatFileSize(size)}</span>
+            <span>Size: {isFolder ? '--' : formatFileSize(size ?? 0)}</span>
             <span>{createdAt && format(new Date(createdAt), 'MMM dd, yyyy')}</span>
           </div>
 
           <div className="flex items-center space-x-2">
-            <Badge variant="secondary" className={`text-xs ${getStatusColor()}`}>
+            {/* <Badge variant="secondary" className={`text-xs ${getStatusColor()}`}>
               {status}
             </Badge>
             <Badge variant="secondary" className={`text-xs ${getVisibilityColor()}`}>
               {visibility}
-            </Badge>
+            </Badge> */}
           </div>
         </div>
       </CardContent>

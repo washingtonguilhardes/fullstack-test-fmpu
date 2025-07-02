@@ -1,28 +1,15 @@
 'use client';
 
 import { format } from 'date-fns';
-import { MoreHorizontalIcon } from 'lucide-react';
-import { useState } from 'react';
 
-import Link from 'next/link';
+import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
-import { FileEntity, FileType } from '@driveapp/contracts/entities/files/file.entity';
-
-import { ConfirmationDialog } from '@/components/templates';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { IconEditCircle, IconFolder, IconLoader, IconTrash } from '@tabler/icons-react';
-import { ColumnDef, Row } from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
 
 import { FileDropdownActionsComponent } from '../file-actions/file-dropdown-actions.component';
 import { TriggerComponent } from './trigger/trigger.component';
 
-export const columns: ColumnDef<FileEntity>[] = [
+export const columns: ColumnDef<ArtifactoryEntity>[] = [
   {
     id: 'navigator',
     header: '',
@@ -45,8 +32,10 @@ export const columns: ColumnDef<FileEntity>[] = [
   {
     accessorKey: 'createdAt',
     header: 'Created At',
-    cell: ({ row, getValue }) => {
-      return <div>{format(new Date(getValue<string>()), 'dd/MM/yyyy')}</div>;
+    cell: ({ getValue }) => {
+      const value = getValue<string>();
+      if (!value) return <div>--</div>;
+      return <div>{format(new Date(value), 'dd/MM/yyyy')}</div>;
     }
   },
   {

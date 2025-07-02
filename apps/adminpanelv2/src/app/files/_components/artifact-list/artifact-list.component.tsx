@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { FileEntity } from '@driveapp/contracts/entities/files/file.entity';
+import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
 import {
   CompoundActionButton,
@@ -17,7 +17,7 @@ import { ArtifactsTable } from './table';
 import { ViewToggleComponent, ViewMode } from './view-toggle.component';
 
 interface ArtifactListComponentProps {
-  files: FileEntity[];
+  files: ArtifactoryEntity[];
   segment?: string;
   preview?: boolean;
 }
@@ -27,7 +27,7 @@ export function ArtifactListComponent({
   segment = '',
   preview = false
 }: ArtifactListComponentProps) {
-  const [data, setData] = useState<FileEntity[]>(files);
+  const [data, setData] = useState<ArtifactoryEntity[]>(files);
   const [activeSegment, setActiveSegment] = useState<string>(segment);
   const [uploadFlow, setUploadFlow] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<ViewMode>('table');

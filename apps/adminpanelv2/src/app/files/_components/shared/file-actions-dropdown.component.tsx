@@ -2,7 +2,7 @@
 
 import { MoreHorizontalIcon } from 'lucide-react';
 
-import { FileEntity } from '@driveapp/contracts/entities/files/file.entity';
+import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,7 +22,7 @@ import {
 import { useFileActions, FileAction } from '../file-actions/file-actions.context';
 
 interface FileActionsDropdownComponentProps {
-  file: FileEntity;
+  file: ArtifactoryEntity;
   className?: string;
   showOnHover?: boolean;
 }
