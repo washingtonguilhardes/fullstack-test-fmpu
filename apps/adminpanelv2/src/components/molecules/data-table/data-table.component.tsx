@@ -8,49 +8,35 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table';
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
-  useReactTable,
+  useReactTable
 } from '@tanstack/react-table';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   inlineEdit?: boolean;
-  onFilterChange: (value: string) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
-  onFilterChange,
+  data
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
   });
 
   return (
     <div>
-      <div className="flex items-center space-x-2 px-2 py-4">
-        <form
-          onSubmit={event => {
-            event.preventDefault();
-            const formData = new FormData(event.target as HTMLFormElement);
-            const value = formData.get('text') as string;
-            onFilterChange(value);
-          }}
-        >
-          <Input placeholder="Filter..." className="max-w-sm" name="text" />
-        </form>
-      </div>
       <div className="rounded-md">
         <Table>
           <TableHeader>
