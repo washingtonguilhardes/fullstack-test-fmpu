@@ -164,10 +164,16 @@ const files: FileEntity[] = [
 ];
 
 export default async function DashboardPage(props: {
-  searchParams: Promise<{ s: string }>;
+  searchParams: Promise<{ segment: string; preview: string }>;
 }) {
   const { searchParams } = props;
-  const { s } = await searchParams;
+  const { segment, preview } = await searchParams;
 
-  return <ArtifactListComponent files={files} segment={s} />;
+  return (
+    <ArtifactListComponent
+      files={files}
+      segment={segment ?? preview ?? ''}
+      preview={Boolean(preview)}
+    />
+  );
 }

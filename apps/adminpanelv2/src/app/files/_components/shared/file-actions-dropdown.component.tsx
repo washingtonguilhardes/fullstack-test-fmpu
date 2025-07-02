@@ -43,7 +43,7 @@ export function FileActionsDropdownComponent({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className={`h-8 w-8 p-0 ${showOnHover ? 'opacity-0 group-hover:opacity-100 transition-opacity' : ''} ${className}`}
+          className={`h-8 w-8 p-0 ${showOnHover ? 'opacity-100 md:opacity-0 group-hover:opacity-100  transition-opacity' : ''} ${className}`}
         >
           <span className="sr-only">Open menu</span>
           <MoreHorizontalIcon className="h-4 w-4" />
