@@ -13,13 +13,15 @@
   },
   "diffEditor.ignoreTrimWhitespace": false,
   "editor.autoIndent": "full",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
   "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.fixAll.stylelint": "always",
+    "source.fixAll.ts": "always",
+    "source.fixAll.prettier": "always"
+  },
   "editor.formatOnType": false,
   "editor.linkedEditing": true,
   "editor.renderWhitespace": "boundary",
@@ -70,7 +72,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -98,5 +100,7 @@
     ".env",
     ".next"
   ],
-  "appService.deploySubpath": "."
+  "appService.deploySubpath": ".",
+  "vs-code-prettier-eslint.prettierLast": true,
+  "eslint.format.enable": true
 }

@@ -6,9 +6,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { muiTheme } from '@/lib/theme';
-import { ThemeProvider as MTRThemeProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import './globals.css';
 
 
 const geistSans = Geist({
@@ -30,7 +29,6 @@ export default function RootLayout({
     <html lang="en" className="dark" style={{ colorScheme: 'dark' }}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh`}>
         <AppRouterCacheProvider>
-          <MTRThemeProvider theme={muiTheme}>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -62,7 +60,6 @@ export default function RootLayout({
                 transition={Bounce}
               />
             </ThemeProvider>
-          </MTRThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

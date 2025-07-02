@@ -44,8 +44,8 @@ Create a "mini-Dropbox" or "mini-Google Drive" where users can upload different 
         * `folderId` (ID of the folder where the file is located, optional)
     * **Endpoints:**
         * `GET /files`: List all files for the authenticated user.
-        * `GET /files/:id`: Get details of a specific file.
         * `POST /files/upload`: Upload one or more files.
+        * `GET /files/:id`: Get details of a specific file.
         * `DELETE /files/:id`: Delete a file (only by the owner, also remove from cloud storage).
         * `PUT /files/:id/rename`: Rename a file.
         * `PUT /files/:id/move`: Move a file to another folder.
@@ -114,6 +114,8 @@ These points are not mandatory for MVP completion but add significant value and 
 * **Problem Solving:** The overall approach to solving the presented challenges.
 * **Documentation:** Clarity and completeness of the `README.md` file.
 * **Differentiators:** Added value from implemented additional requirements.
+
+---
 
 # Sumary
 
