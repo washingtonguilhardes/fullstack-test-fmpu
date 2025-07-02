@@ -1,12 +1,12 @@
 Project Driveapp {
     database_type: 'mongodb'
     Note: '''
-    # DriveApp Database Schema (MongoDB) - MVP Version
+    # DriveApp Database Schema (MongoDB) - Unified Artifactory Version
 
     A file and media management platform database structure supporting:
     - User authentication and authorization
-    - File upload and management
-    - Folder organization (hierarchical)
+    - Unified artifactory management (files and folders)
+    - Hierarchical organization
     - Secure file access with temporary URLs
     - File metadata tracking
 
@@ -14,7 +14,7 @@ Project Driveapp {
     - JWT-based authentication
     - Cloud storage integration (Azure Blob Storage preferred)
     - File type validation and size limits
-    - Hierarchical folder structure
+    - Hierarchical structure with unified artifactory
     - Secure file access URLs with expiration
     - MongoDB-native design with references
     '''
@@ -64,71 +64,57 @@ Table user_sessions {
 }
 
 // ========================================
-// FOLDER MANAGEMENT
+// UNIFIED ARTIFACTORY MANAGEMENT
 // ========================================
 
-Table folders {
+Table artifactory {
     _id ObjectId [primary key]
-    name string [not null, note: 'Folder name']
+    name string [not null, note: 'Name (original_name for files, name for folders)']
+    type string [not null, note: 'Type: file or folder']
     user_id ObjectId [not null, ref: > users._id]
-    parent_folder_id ObjectId [ref: > folders._id, note: 'Parent folder for hierarchical structure']
+    parent_id ObjectId [ref: > artifactory._id, note: 'Parent artifactory for hierarchical structure']
     path string [not null, note: 'Full path from root (e.g., /Documents/Work)']
-    is_root boolean [not null, default: false, note: 'Whether this is a root folder']
+
+    // File-specific fields
+    server_name string [note: 'Generated server-side file name (files only)']
+    mime_type string [note: 'File MIME type (files only)']
+    size number [note: 'File size in bytes (files only)']
+    access_url string [note: 'Temporary access URL for file download (files only)']
+    access_url_expires_at date [note: 'When the access URL expires (files only)']
+    storage_path string [note: 'Path in cloud storage (files only)']
+    storage_provider string [note: 'Cloud storage provider (files only)']
+    checksum string [note: 'File checksum for integrity verification (files only)']
+    is_public boolean [note: 'Whether file is publicly accessible (files only)']
+    upload_date date [note: 'When file was uploaded (files only)']
+    last_accessed_at date [note: 'Last time file was accessed (files only)']
+
+    // Folder-specific fields
+    is_root boolean [note: 'Whether this is a root folder (folders only)']
+
+    // Common fields
     created_at date [not null, default: `new Date()`]
     updated_at date [not null, default: `new Date()`]
 
     indexes {
-        user_id [name: 'idx_folders_user_id']
-        parent_folder_id [name: 'idx_folders_parent_id']
-        (user_id, path) [unique, name: 'idx_folders_user_path_unique']
+        user_id [name: 'idx_artifactory_user_id']
+        parent_id [name: 'idx_artifactory_parent_id']
+        type [name: 'idx_artifactory_type']
+        (user_id, path) [unique, name: 'idx_artifactory_user_path_unique']
+        (user_id, type) [name: 'idx_artifactory_user_type']
     }
 
-    Note: 'Stores folder structure with hierarchical organization per user'
+    Note: 'Unified table for files and folders with hierarchical organization'
 }
 
 // ========================================
-// FILE MANAGEMENT
+// ARTIFACTORY SHARING & ACCESS CONTROL
 // ========================================
 
-Table files {
+Table artifactory_shares {
     _id ObjectId [primary key]
-    original_name string [not null, note: 'Original file name as uploaded']
-    server_name string [not null, note: 'Generated server-side file name']
-    mime_type string [not null, note: 'File MIME type (e.g., image/jpeg)']
-    size number [not null, note: 'File size in bytes']
-    access_url string [note: 'Temporary access URL for file download']
-    access_url_expires_at date [note: 'When the access URL expires']
-    user_id ObjectId [not null, ref: > users._id]
-    folder_id ObjectId [ref: > folders._id, note: 'Folder where file is located (optional)']
-    storage_path string [not null, note: 'Path in cloud storage (e.g., Azure Blob)']
-    storage_provider string [not null, default: 'azure', note: 'Cloud storage provider']
-    checksum string [note: 'File checksum for integrity verification']
-    is_public boolean [not null, default: false, note: 'Whether file is publicly accessible']
-    upload_date date [not null, default: `new Date()`]
-    last_accessed_at date [note: 'Last time file was accessed']
-    created_at date [not null, default: `new Date()`]
-    updated_at date [not null, default: `new Date()`]
-
-    indexes {
-        user_id [name: 'idx_files_user_id']
-        folder_id [name: 'idx_files_folder_id']
-        mime_type [name: 'idx_files_mime_type']
-        upload_date [name: 'idx_files_upload_date']
-        (user_id, original_name) [name: 'idx_files_user_original_name']
-    }
-
-    Note: 'Stores file metadata and cloud storage information'
-}
-
-// ========================================
-// FILE SHARING & ACCESS CONTROL
-// ========================================
-
-Table file_shares {
-    _id ObjectId [primary key]
-    file_id ObjectId [not null, ref: > files._id]
-    shared_by_user_id ObjectId [not null, ref: > users._id, note: 'User who shared the file']
-    shared_with_user_id ObjectId [ref: > users._id, note: 'User with whom file is shared (optional)']
+    artifactory_id ObjectId [not null, ref: > artifactory._id]
+    shared_by_user_id ObjectId [not null, ref: > users._id, note: 'User who shared the artifactory']
+    shared_with_user_id ObjectId [ref: > users._id, note: 'User with whom artifactory is shared (optional)']
     access_token string [unique, note: 'Token for public access']
     access_level string [not null, default: 'read', note: 'read, write, admin']
     expires_at date [note: 'When the share expires']
@@ -136,13 +122,13 @@ Table file_shares {
     created_at date [not null, default: `new Date()`]
 
     indexes {
-        file_id [name: 'idx_file_shares_file_id']
-        shared_by_user_id [name: 'idx_file_shares_shared_by']
-        shared_with_user_id [name: 'idx_file_shares_shared_with']
+        artifactory_id [name: 'idx_artifactory_shares_artifactory_id']
+        shared_by_user_id [name: 'idx_artifactory_shares_shared_by']
+        shared_with_user_id [name: 'idx_artifactory_shares_shared_with']
         access_token [unique]
     }
 
-    Note: 'Manages file sharing between users and public access tokens'
+    Note: 'Manages artifactory sharing between users and public access tokens'
 }
 
 TableGroup user_management [color: #3498DB, note: 'User authentication and account management'] {
@@ -150,10 +136,9 @@ TableGroup user_management [color: #3498DB, note: 'User authentication and accou
     user_sessions
 }
 
-TableGroup file_management [color: #2ECC71, note: 'File storage and organization'] {
-    files
-    folders
-    file_shares
+TableGroup artifactory_management [color: #2ECC71, note: 'Unified artifactory storage and organization'] {
+    artifactory
+    artifactory_shares
 }
 
 // ========================================
@@ -162,25 +147,33 @@ TableGroup file_management [color: #2ECC71, note: 'File storage and organization
 
 Note system_notes {
 '''
-## MongoDB Implementation Notes - MVP Version
+## MongoDB Implementation Notes - Unified Artifactory Version
 
 ### Core Features (MVP Requirements)
 - User authentication with JWT tokens
-- File upload with cloud storage integration
-- Folder hierarchy management
+- Unified artifactory management (files and folders)
+- Hierarchical organization with single table
 - File sharing and access control
 - Basic file metadata storage
+
+### Unified Artifactory Design
+- Single table for both files and folders
+- Type field distinguishes between 'file' and 'folder'
+- Conditional fields based on type
+- Simplified queries and relationships
+- Better performance with fewer collections
 
 ### Security Considerations
 - All passwords are hashed using bcrypt
 - JWT tokens are stored as hashes in user_sessions
 - File access URLs have expiration times
-- User isolation (users can only access their own files)
+- User isolation (users can only access their own artifacts)
 
 ### Performance Optimizations
 - Indexes on frequently queried fields
 - Compound indexes for user-specific queries
-- Efficient folder hierarchy with path-based queries
+- Type-specific indexes for filtering
+- Efficient hierarchy with path-based queries
 
 ### Cloud Storage Integration
 - Supports Azure Blob Storage (preferred)
@@ -199,10 +192,11 @@ Note system_notes {
 - Use compound indexes for multi-field queries
 - Consider TTL indexes for session expiration
 
-### Removed Features (Not in MVP)
-- Upload session tracking (handled by Redis + frontend)
-- Complex audit logging (basic logging sufficient)
-- Embedded documents (keeping it simple)
-- Advanced metadata (basic file info only)
+### Benefits of Unified Schema
+- Simpler data model
+- Easier queries across files and folders
+- Better performance with fewer collections
+- Consistent API structure
+- Reduced complexity in frontend
 '''
 }
