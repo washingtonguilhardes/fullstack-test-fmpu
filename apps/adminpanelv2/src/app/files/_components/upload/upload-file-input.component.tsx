@@ -1,9 +1,11 @@
+'use client';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import { IconUpload } from '@tabler/icons-react';
 
-export function UploadFileComponent(props: {
+export function UploadFileInputComponent(props: {
   onChange: (files: File[]) => void;
   disabled?: boolean;
 }) {

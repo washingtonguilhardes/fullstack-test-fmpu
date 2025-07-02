@@ -8,12 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  Dialog as ShadcnDialog,
+  Dialog as ShadcnDialog
 } from '@/components/ui/dialog';
 interface DialogProps {
   title: string;
   description: string;
-  trigger: ReactNode;
+  trigger?: ReactNode;
   footer?: ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -22,20 +22,17 @@ interface DialogProps {
 export type { DialogClose, DialogFooter, DialogProps };
 
 export function Dialog(props: PropsWithChildren<DialogProps>) {
-  const { title, description, children, trigger, open, onOpenChange, footer } =
-    props;
+  const { title, description, children, trigger, open, onOpenChange, footer } = props;
   return (
     <ShadcnDialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         {children}
-        {footer && (
-          <DialogFooter className="sm:justify-end">{footer}</DialogFooter>
-        )}
+        {footer && <DialogFooter className="sm:justify-end">{footer}</DialogFooter>}
       </DialogContent>
     </ShadcnDialog>
   );
