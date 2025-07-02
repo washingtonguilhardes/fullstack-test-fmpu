@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { DeleteFileComponent } from './delete-file.component';
 import { useFileActions, FileAction } from './file-actions.context';
 import { MoveFileComponent } from './move-file.component';
@@ -9,11 +11,10 @@ import { ShareFileComponent } from './share-file.component';
 export function FileActionDialogsComponent() {
   const { selectedFile, currentAction, isActionOpen, closeAction } = useFileActions();
 
-  if (!selectedFile || !currentAction || !isActionOpen) {
-    return null;
-  }
-
-  const renderDialog = () => {
+  return useMemo(() => {
+    if (!selectedFile || !currentAction || !isActionOpen) {
+      return null;
+    }
     switch (currentAction) {
       case FileAction.DELETE:
         return (
@@ -59,7 +60,5 @@ export function FileActionDialogsComponent() {
       default:
         return null;
     }
-  };
-
-  return renderDialog();
+  }, [selectedFile, currentAction, isActionOpen, closeAction]);
 }

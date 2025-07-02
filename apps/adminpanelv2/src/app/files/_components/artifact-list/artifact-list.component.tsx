@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 
 import { FileEntity } from '@driveapp/contracts/entities/files/file.entity';
 
-import { Button } from '@/components/ui/button';
-import { IconPlus } from '@tabler/icons-react';
+import {
+  CompoundActionButton,
+  type ActionType
+} from '@/components/molecules/compound-action-button';
 
 import { ArtifactGridComponent } from '../artifact-cards';
 import { FileActionDialogsComponent } from '../file-actions/file-action-dialogs.component';
@@ -17,11 +19,13 @@ import { ViewToggleComponent, ViewMode } from './view-toggle.component';
 interface ArtifactListComponentProps {
   files: FileEntity[];
   segment?: string;
+  preview?: boolean;
 }
 
 export function ArtifactListComponent({
   files = [],
-  segment = ''
+  segment = '',
+  preview = false
 }: ArtifactListComponentProps) {
   const [data, setData] = useState<FileEntity[]>(files);
   const [activeSegment, setActiveSegment] = useState<string>(segment);
@@ -37,14 +41,22 @@ export function ArtifactListComponent({
 
   return (
     <FileActionProvider>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Files</h1>
-        <div className="flex items-center space-x-4">
+      <div className="flex justify-between items-center mb-6 flex-col md:flex-row gap-4 w-full">
+        <div className="flex items-center space-x-4 gap-4 w-full md:w-auto justify-between md:flex-1">
+          <div className="text-2xl font-bold w-full flex-1 ">Files {segment}</div>
           <ViewToggleComponent viewMode={viewMode} onViewModeChange={setViewMode} />
-          <Button variant="outline" onClick={() => setUploadFlow(true)}>
-            <IconPlus />
-            Add Files
-          </Button>
+        </div>
+        <div className="flex items-center space-x-4 gap-4 w-full md:w-auto">
+          <CompoundActionButton
+            onAction={(action: ActionType) => {
+              if (action === 'file') {
+                setUploadFlow(true);
+              } else {
+                // Handle folder creation - you can implement this later
+                console.log('Create new folder');
+              }
+            }}
+          />
         </div>
       </div>
       <UploadFlowComponent open={uploadFlow} onOpenChange={setUploadFlow} />

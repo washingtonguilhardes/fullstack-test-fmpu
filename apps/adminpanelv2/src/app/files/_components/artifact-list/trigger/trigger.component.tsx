@@ -17,7 +17,7 @@ export function TriggerComponent(props: { file: FileEntity }) {
       <div className="flex items-center space-x-2">
         <FileIconComponent file={file} size="sm" />
         <Button variant="link" asChild>
-          <Link href={`/files?folder=${path}`}>{name}</Link>
+          <Link href={`/files?segment=${path}`}>{name}</Link>
         </Button>
       </div>
     );
@@ -27,7 +27,7 @@ export function TriggerComponent(props: { file: FileEntity }) {
     <div className="flex items-center space-x-2">
       <FileIconComponent file={file} size="sm" />
       <Button variant="link" asChild>
-        <Link href={`/files?file=${path}`}>{name}</Link>
+        <Link href={`/files?preview=${path}`}>{name}</Link>
       </Button>
     </div>
   );
