@@ -1,11 +1,10 @@
-import path from "path";
+import Link from 'next/link';
 
-import Link from "next/link";
+import { FileEntity, FileType } from '@driveapp/contracts/entities/files/file.entity';
 
-import { FileEntity, FileType } from "@driveapp/contracts/entities/files/file.entity";
+import { Button } from '@/components/ui/button';
 
-import { Button } from "@/components/ui/button";
-import { IconFolder } from "@tabler/icons-react";
+import { FileIconComponent } from '../../shared';
 
 export function TriggerComponent(props: { file: FileEntity }) {
   const { file } = props;
@@ -13,19 +12,23 @@ export function TriggerComponent(props: { file: FileEntity }) {
 
   const isFolder = type === FileType.FOLDER;
 
-  if(isFolder) {
-    return <div>
-      <Button>
-        <IconFolder /> Trigger
-      </Button>
-    </div>;
+  if (isFolder) {
+    return (
+      <div className="flex items-center space-x-2">
+        <FileIconComponent file={file} size="sm" />
+        <Button variant="link" asChild>
+          <Link href={`/files?folder=${path}`}>{name}</Link>
+        </Button>
+      </div>
+    );
   }
 
   return (
-    <Button variant="link">
-      <Link href={`/d?s=${path}`}>
-        {path}
-      </Link>
-    </Button>
-  )
+    <div className="flex items-center space-x-2">
+      <FileIconComponent file={file} size="sm" />
+      <Button variant="link" asChild>
+        <Link href={`/files?file=${path}`}>{name}</Link>
+      </Button>
+    </div>
+  );
 }
