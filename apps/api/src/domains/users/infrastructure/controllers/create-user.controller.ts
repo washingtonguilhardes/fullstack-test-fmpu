@@ -1,21 +1,26 @@
-import {
-  CreateUserService,
-  ICreateUserService,
-} from '@/domains/users/interfaces/services/create-user';
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { CreateUserDto } from '@driveapp/contracts/entities/users/user.entity';
 
-import { User } from '../../domain';
-import { UserTransformPipe } from '../pipes';
+import { EmailImpl, PasswordImpl } from '@/domains';
+import {
+  CreateUserServiceRef,
+  ICreateUserService,
+} from '@/domains/users/interfaces/services/create-user.service';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 
 @Controller('/users/create')
 export class CreateUserController {
   constructor(
-    @Inject(CreateUserService)
+    @Inject(CreateUserServiceRef)
     private readonly createUserService: ICreateUserService,
   ) {}
 
   @Post()
-  async createUser(@Body(UserTransformPipe) user: User) {
-    return this.createUserService.execute(user);
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return this.createUserService.execute(
+      new EmailImpl(createUserDto.email),
+      new PasswordImpl(createUserDto.password),
+      createUserDto.firstName,
+      createUserDto.lastName,
+    );
   }
 }

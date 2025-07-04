@@ -3,6 +3,7 @@ import { UserEntity } from '@driveapp/contracts/entities/users/user.entity';
 import { ApplicationException } from '@/shared/exceptions/application.exception';
 
 import { Email } from './email';
+import { HashedPassword } from './hashed-password';
 import { Password } from './password';
 
 export interface User {
@@ -13,7 +14,7 @@ export interface User {
   getLastName(): string;
   getFullName(): string;
   getUsername(): string;
-  getPassword(): Password | null;
+  getPassword(): HashedPassword | null;
 }
 
 export class UserImpl implements User {
@@ -21,7 +22,7 @@ export class UserImpl implements User {
 
   constructor(
     private readonly email: Email,
-    private readonly password: Password | null,
+    private readonly password: HashedPassword,
     private readonly firstName: string = '',
     private readonly lastName: string = '',
     private readonly createdAt: Date = new Date(),
@@ -38,7 +39,7 @@ export class UserImpl implements User {
     return this.id;
   }
 
-  getPassword(): Password | null {
+  getPassword(): HashedPassword {
     return this.password;
   }
 

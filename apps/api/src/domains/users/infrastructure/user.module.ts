@@ -8,8 +8,18 @@ import {
 import { Module } from '@nestjs/common';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 
-import { CreateUserServiceImpl, ValidateUserServiceImpl } from '../application';
-import { CreateUserService } from '../interfaces/services/create-user';
+import {
+  CreateUserServiceImpl,
+  GetUserByEmailServiceImpl,
+  ValidateUserByCredentialsServiceImpl,
+  ValidateUserServiceImpl,
+} from '../application';
+import {
+  GetUserByEmailService,
+  GetUserByEmailServiceRef,
+  ValidateUserByCredentialsServiceRef,
+} from '../interfaces';
+import { CreateUserServiceRef } from '../interfaces/services/create-user.service';
 import { CreateUserController } from './controllers/create-user.controller';
 import { UserMongooseRepositoryImpl } from './mongoose/user.repository.impl';
 import {
@@ -35,7 +45,7 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
       inject: [getModelToken(UserModelName)],
     },
     {
-      provide: CreateUserService,
+      provide: CreateUserServiceRef,
       useFactory: (userRepository: IUserRepository) =>
         new CreateUserServiceImpl(
           userRepository,
@@ -43,7 +53,23 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
         ),
       inject: [UserRepository],
     },
+    {
+      provide: GetUserByEmailServiceRef,
+      useFactory: (userRepository: IUserRepository) =>
+        new GetUserByEmailServiceImpl(userRepository),
+      inject: [UserRepository],
+    },
+    {
+      provide: ValidateUserByCredentialsServiceRef,
+      useFactory: (getUserByEmailService: GetUserByEmailService) =>
+        new ValidateUserByCredentialsServiceImpl(getUserByEmailService),
+      inject: [GetUserByEmailServiceRef],
+    },
   ],
-  exports: [CreateUserService],
+  exports: [
+    CreateUserServiceRef,
+    GetUserByEmailServiceRef,
+    ValidateUserByCredentialsServiceRef,
+  ],
 })
 export class UserModule {}

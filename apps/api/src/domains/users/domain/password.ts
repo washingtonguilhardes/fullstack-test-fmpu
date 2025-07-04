@@ -2,9 +2,14 @@ import * as bcrypt from 'bcrypt';
 
 import { ApplicationException } from '@/shared/exceptions';
 
+import { HashedPassword, HashedPasswordImpl } from './hashed-password';
+
 export interface Password {
-  hash(): Promise<string>;
+  getValue(): string;
+  hash(): Promise<HashedPassword>;
   validate(): void;
+  isEqualTo(password: HashedPassword): Promise<boolean>;
+  toJSON(): string;
 }
 
 const SALT_ROUNDS = 10;
@@ -14,10 +19,15 @@ export class PasswordImpl implements Password {
     this.validate();
   }
 
-  async hash(): Promise<string> {
+  getValue(): string {
+    return this.rawPassword;
+  }
+
+  async hash(): Promise<HashedPassword> {
     try {
       const salt = await bcrypt.genSalt(SALT_ROUNDS);
-      return await bcrypt.hash(this.rawPassword, salt);
+      const hashedPassword = await bcrypt.hash(this.rawPassword, salt);
+      return new HashedPasswordImpl(hashedPassword);
     } catch (error) {
       throw ApplicationException.invalidParameter(
         'password',
@@ -54,6 +64,25 @@ export class PasswordImpl implements Password {
         'password',
         'Password must be at least 8 characters long and at most 20 characters long, contain at least one uppercase letter, one lowercase letter, and one number',
       );
+    }
+  }
+
+  async isEqualTo(password: HashedPassword): Promise<boolean> {
+    if (!this.rawPassword) {
+      return false;
+    }
+    try {
+      const result = await bcrypt.compare(
+        this.rawPassword,
+        password.getValue(),
+      );
+      return result;
+    } catch (error) {
+      console.log('error', error);
+      throw ApplicationException.invalidParameter(
+        'password',
+        'Error comparing passwords',
+      ).previousError(error as Error);
     }
   }
 }
