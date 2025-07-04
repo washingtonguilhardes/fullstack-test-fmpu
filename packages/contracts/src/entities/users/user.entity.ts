@@ -1,31 +1,29 @@
 export interface UserEntity {
-  _id: string; // ObjectId as string
+  _id?: string;
   email: string;
-  password_hash: string;
-  full_name: string;
-  avatar_url?: string;
-  is_active: boolean;
-  email_verified: boolean;
-  last_login_at?: Date;
-  created_at: Date;
-  updated_at: Date;
+  passwordHash: string;
+  firstName: string;
+  lastName: string;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface CreateUserDto {
   email: string;
   password: string; // Will be hashed
-  full_name: string;
-  avatar_url?: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl?: string;
 }
 
 export interface UpdateUserDto {
-  full_name?: string;
-  avatar_url?: string;
-  is_active?: boolean;
-  email_verified?: boolean;
+  fullName?: string;
+  avatarUrl?: string;
+  isActive?: boolean;
+  emailVerified?: boolean;
 }
 
 export interface UpdatePasswordDto {
-  current_password: string;
-  new_password: string;
+  currentPassword: string;
+  newPassword: string;
 }
