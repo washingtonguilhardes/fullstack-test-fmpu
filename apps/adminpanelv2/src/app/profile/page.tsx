@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { SiteHeader } from '@/components/site-header';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,9 +16,14 @@ import { Separator } from '@/components/ui/separator';
 export default function ProfilePage() {
   return (
     <div className="flex flex-col h-full">
-      <SiteHeader title="Profile" />
+      <SiteHeader />
       <div className="flex-1 p-6">
         <div className="max-w-2xl mx-auto space-y-6">
+          <div>
+            <Button asChild>
+              <Link href="/files">My Files</Link>
+            </Button>
+          </div>
           <Card>
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
@@ -25,7 +32,7 @@ export default function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
                   <Input id="firstName" placeholder="Enter your first name" />
