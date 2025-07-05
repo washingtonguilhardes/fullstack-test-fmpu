@@ -1,5 +1,4 @@
-import { User } from '@/domains/users';
-
-export interface IValidateTokenService {
+export interface ValidateTokenService {
   execute(token: string): Promise<void>;
 }
+export const ValidateTokenServiceRef = Symbol('ValidateTokenServiceRef');

@@ -12,7 +12,7 @@ export class UserMongoose extends Document<string> implements UserEntity {
   @Prop({ required: true })
   passwordHash: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   firstName: string;
 
   @Prop({ required: false })
@@ -22,7 +22,7 @@ export class UserMongoose extends Document<string> implements UserEntity {
   createdAt: Date;
 
   @Prop()
-  updatedAt: Date;
+  updatedAt: Date | null;
 }
 
 export const UserModelName = 'User';

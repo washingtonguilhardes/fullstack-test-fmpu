@@ -72,7 +72,6 @@ export class TokenPayloadImpl implements TokenPayload {
         ApplicationException.invalidParameter('type', 'Token type is required'),
       );
     }
-
     if (exceptions.length > 0) {
       throw ApplicationException.invalidParameter(
         'tokenPayload',

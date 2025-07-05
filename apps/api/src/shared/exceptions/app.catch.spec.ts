@@ -6,6 +6,7 @@ import { AllExceptionsFilter } from './app.catch';
 import { ApplicationException } from './application.exception';
 
 jest.mock('@nestjs/common', () => ({
+  // @ts-ignore
   ...jest.requireActual('@nestjs/common'),
   Logger: jest.fn().mockReturnValue({
     error: jest.fn(),

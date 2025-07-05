@@ -1,3 +1,4 @@
+import console from 'console';
 import { Model } from 'mongoose';
 
 import { UserEntity } from '@driveapp/contracts/entities/users/user.entity';
@@ -13,14 +14,17 @@ export class UserMongooseRepositoryImpl implements IUserRepository {
   }
 
   async create(user: UserEntity): Promise<UserEntity> {
-    console.log(user);
     const userDocument = new this.userModel(user);
     await userDocument.save();
     return userDocument.toObject();
   }
 
-  update(id: string, user: Partial<UserEntity>): Promise<UserEntity> {
-    return this.userModel.findByIdAndUpdate(id, user, { new: true });
+  async update(user: Partial<UserEntity>): Promise<UserEntity> {
+    const doc = await this.userModel.findByIdAndUpdate(user._id, user);
+    if (!doc) {
+      throw new Error('Error updating user');
+    }
+    return doc.toObject();
   }
 
   async delete(id: string): Promise<void> {

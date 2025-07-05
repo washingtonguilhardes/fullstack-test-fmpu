@@ -8,19 +8,32 @@ export interface UserEntity {
   updatedAt?: Date;
 }
 
-export interface CreateUserDto {
+export interface UserProfileEntity {
+  id: string;
   email: string;
-  password: string; // Will be hashed
   firstName: string;
   lastName: string;
+}
+
+export interface SignupNewAccountResult {
+  user: Omit<UserEntity, 'passwordHash' | 'createdAt' | 'updatedAt' | '_id'> & {
+    id: string;
+  };
+  token: string;
+}
+
+export interface CreateAccountDto {
+  email: string;
+  password: string; // Will be hashed
+  firstName?: string;
+  lastName?: string;
   avatarUrl?: string;
 }
 
 export interface UpdateUserDto {
-  fullName?: string;
-  avatarUrl?: string;
-  isActive?: boolean;
-  emailVerified?: boolean;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface UpdatePasswordDto {

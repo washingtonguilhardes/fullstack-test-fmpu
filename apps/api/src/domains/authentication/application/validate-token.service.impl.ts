@@ -2,9 +2,9 @@ import * as jwt from 'jsonwebtoken';
 
 import { ApplicationException } from '@/shared';
 
-import { IValidateTokenService } from '../interfaces';
+import { ValidateTokenService } from '../interfaces';
 
-export class ValidateTokenServiceImpl implements IValidateTokenService {
+export class ValidateTokenServiceImpl implements ValidateTokenService {
   constructor(private readonly jwtSecret: string) {
     if (!this.jwtSecret) {
       throw ApplicationException.parameterNotFound(

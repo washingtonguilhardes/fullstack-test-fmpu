@@ -1,5 +1,7 @@
-import { Token } from '../domains';
+import { Token, TokenPayload } from '../domains';
 
-export interface IDecodeTokenService {
-  execute(token: string): Promise<Token>;
+export interface DecodeTokenService {
+  execute(token: string): Promise<TokenPayload>;
 }
+
+export const DecodeTokenServiceRef = Symbol('DecodeTokenServiceRef');

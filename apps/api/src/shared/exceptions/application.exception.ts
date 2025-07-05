@@ -304,7 +304,7 @@ export class ApplicationException extends HttpException {
 
   static forbiddenResource() {
     return new ApplicationException(
-      "User hasn't access to this resource",
+      'Target resource is not allowed to be accessed by the source',
       DefaultApplicationException.FORBIDDEN,
       HttpStatus.FORBIDDEN,
     );

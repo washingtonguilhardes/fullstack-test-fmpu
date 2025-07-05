@@ -1,4 +1,10 @@
+import { Suspense } from 'react';
+
+import { cookies } from 'next/headers';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+
+import { UserProfileEntity } from '@driveapp/contracts/entities/users/user.entity';
 
 import { SiteHeader } from '@/components/site-header';
 import { Button } from '@/components/ui/button';
@@ -12,8 +18,25 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { restClientServer } from '@/lib/http/rest.client';
 
-export default function ProfilePage() {
+import { ProfileInfoFormComponent } from './_components/profile-info-form.component';
+
+export default async function ProfilePage() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('access_token');
+  if (!accessToken) {
+    return redirect('/login');
+  }
+
+  const { data } = await restClientServer.get<UserProfileEntity>('/account/whoami', {
+    headers: {
+      Authorization: `Bearer ${accessToken.value}`
+    }
+  });
+
+  console.log(data);
+
   return (
     <div className="flex flex-col h-full">
       <SiteHeader />
@@ -24,31 +47,9 @@ export default function ProfilePage() {
               <Link href="/files">My Files</Link>
             </Button>
           </div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
-              <CardDescription>
-                Update your personal information and account settings.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" placeholder="Enter your first name" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" placeholder="Enter your last name" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="Enter your email" />
-              </div>
-              <Button>Update Profile</Button>
-            </CardContent>
-          </Card>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProfileInfoFormComponent user={data} />
+          </Suspense>
 
           <Separator />
 

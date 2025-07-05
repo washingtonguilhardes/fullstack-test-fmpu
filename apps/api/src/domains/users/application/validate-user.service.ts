@@ -3,19 +3,22 @@ import { IUserRepository } from '@driveapp/contracts/repositories/user.repositor
 import { ApplicationException } from '@/shared/exceptions';
 
 import { Email, Password, User } from '../domain';
+import { GetUserByEmailService } from '../interfaces';
 
 export interface IValidateUserService {
   execute(user: User): Promise<void>;
 }
 
+export const ValidateUserServiceRef = Symbol('ValidateUserService');
+
 export class ValidateUserServiceImpl implements IValidateUserService {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(private readonly getUserByEmailService: GetUserByEmailService) {}
 
   async execute(user: User): Promise<void> {
     if (!user.getEmail() || !user.getPassword()) {
       throw ApplicationException.invalidParameter(
-        'email|password',
-        'Email and password is required',
+        'user',
+        'User data mismatch that was provided',
       );
     }
 
@@ -36,14 +39,9 @@ export class ValidateUserServiceImpl implements IValidateUserService {
         'Invalid password',
       ).previousError(error as Error);
     }
-    const existing = await this.userRepository.findByEmail(
-      user.getEmail().getValue(),
-    );
-    if (existing) {
-      throw ApplicationException.invalidParameter(
-        'email',
-        'Invalid user data, please check your email and password',
-      );
+    const existing = await this.getUserByEmailService.execute(user.getEmail());
+    if (existing && existing.getId().toString() !== user.getId().toString()) {
+      throw ApplicationException.invalidParameter('email', 'Invalid user data');
     }
   }
 }

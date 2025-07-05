@@ -6,14 +6,28 @@ import {
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { IssueTokenServiceImpl } from '../../application';
-import { IssueTokenServiceRef } from '../../interfaces';
-import { AuthController } from './controllers/auth.controller';
+import {
+  DecodeTokenServiceImpl,
+  IssueTokenServiceImpl,
+  ValidateTokenServiceImpl,
+} from '../../application';
+import {
+  SetTokenCookieServiceImpl,
+  SetTokenCookieServiceRef,
+} from '../../application/token-cookie.service.impl';
+import {
+  DecodeTokenServiceRef,
+  IssueTokenServiceRef,
+  ValidateTokenServiceRef,
+} from '../../interfaces';
 
 @Module({
   imports: [UserModule],
-  controllers: [AuthController],
   providers: [
+    {
+      provide: SetTokenCookieServiceRef,
+      useClass: SetTokenCookieServiceImpl,
+    },
     {
       provide: IssueTokenServiceRef,
       useFactory: (
@@ -27,7 +41,24 @@ import { AuthController } from './controllers/auth.controller';
         ),
       inject: [ConfigService, ValidateUserByCredentialsServiceRef],
     },
+    {
+      provide: ValidateTokenServiceRef,
+      useFactory: (configService: ConfigService) =>
+        new ValidateTokenServiceImpl(configService.get('JWT_SECRET')),
+      inject: [ConfigService],
+    },
+    {
+      provide: DecodeTokenServiceRef,
+      useFactory: (configService: ConfigService) =>
+        new DecodeTokenServiceImpl(configService.get('JWT_SECRET')),
+      inject: [ConfigService],
+    },
   ],
-  exports: [IssueTokenServiceRef],
+  exports: [
+    IssueTokenServiceRef,
+    SetTokenCookieServiceRef,
+    ValidateTokenServiceRef,
+    DecodeTokenServiceRef,
+  ],
 })
 export class AuthenticationModule {}

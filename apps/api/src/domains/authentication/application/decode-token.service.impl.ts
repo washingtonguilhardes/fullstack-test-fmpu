@@ -2,10 +2,10 @@ import * as jwt from 'jsonwebtoken';
 
 import { ApplicationException } from '@/shared';
 
-import { TokenImpl } from '../domain';
-import { IDecodeTokenService, Token } from '../interfaces';
+import { TokenPayloadImpl } from '../domain';
+import { DecodeTokenService, TokenPayload } from '../interfaces';
 
-export class DecodeTokenServiceImpl implements IDecodeTokenService {
+export class DecodeTokenServiceImpl implements DecodeTokenService {
   constructor(private readonly jwtSecret: string) {
     if (!this.jwtSecret) {
       throw ApplicationException.parameterNotFound(
@@ -15,7 +15,7 @@ export class DecodeTokenServiceImpl implements IDecodeTokenService {
     }
   }
 
-  async execute(token: string): Promise<Token> {
+  async execute(token: string): Promise<TokenPayload> {
     try {
       if (!token) {
         throw ApplicationException.invalidParameter(
@@ -33,7 +33,7 @@ export class DecodeTokenServiceImpl implements IDecodeTokenService {
         );
       }
 
-      return new TokenImpl(token);
+      return new TokenPayloadImpl(decoded.sub, decoded.username, decoded.iat);
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
         throw ApplicationException.invalidParameter(
@@ -42,12 +42,10 @@ export class DecodeTokenServiceImpl implements IDecodeTokenService {
         ).previousError(error as Error);
       }
 
-      // Re-throw ApplicationException instances
       if (error instanceof ApplicationException) {
         throw error;
       }
 
-      // Handle other errors
       throw ApplicationException.invalidParameter(
         'token',
         'Token decoding failed',

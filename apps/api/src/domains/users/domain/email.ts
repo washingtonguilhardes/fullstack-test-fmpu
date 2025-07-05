@@ -4,11 +4,16 @@ export interface Email {
   getValue(): string;
   validate(): boolean;
   toString(): string;
+  equals(email: Email): boolean;
 }
 
 export class EmailImpl implements Email {
   constructor(private readonly email: string) {
     this.validate();
+  }
+
+  equals(email: Email): boolean {
+    return this.email === email.getValue();
   }
 
   toString(): string {

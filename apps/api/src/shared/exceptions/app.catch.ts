@@ -1,5 +1,7 @@
 // import { defaultClient } from 'applicationinsights';
 
+import { IHTTPClientErrorResponse } from '@driveapp/contracts/utils/http-clients';
+
 import {
   ArgumentsHost,
   BadRequestException,
@@ -13,14 +15,6 @@ import { AbstractHttpAdapter } from '@nestjs/core';
 
 import { ApplicationException } from './application.exception';
 
-type ResponseBody = {
-  message: unknown;
-  statusCode: number;
-  exceptionCode: string;
-  validation?: unknown;
-  metas: unknown[];
-};
-
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(
@@ -30,7 +24,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private handleApplicationException(
     exception: ApplicationException,
-  ): ResponseBody {
+  ): IHTTPClientErrorResponse {
     const message = exception.getMessage();
     const exceptionCode = exception.getExceptionCode();
     const metas = exception.getMetas(
@@ -46,7 +40,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     };
   }
 
-  private handleHttpException(exception: HttpException): ResponseBody {
+  private handleHttpException(
+    exception: HttpException,
+  ): IHTTPClientErrorResponse {
     const message = exception.message;
     const statusCode = exception.getStatus();
 
@@ -60,7 +56,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private handleBadRequestException(
     exception: BadRequestException,
-  ): ResponseBody {
+  ): IHTTPClientErrorResponse {
     const statusCode = exception.getStatus();
     const response = exception.getResponse();
     return {
@@ -78,7 +74,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const path = this.httpAdapter.getRequestUrl(ctx.getRequest());
     const method = this.httpAdapter.getRequestMethod(ctx.getRequest());
     const logger = new Logger(`${method}(${path})`);
-    let responseBody: ResponseBody;
+    let responseBody: IHTTPClientErrorResponse;
     switch (true) {
       case exception instanceof ApplicationException:
         responseBody = this.handleApplicationException(exception);

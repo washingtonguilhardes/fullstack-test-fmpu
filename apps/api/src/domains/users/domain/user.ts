@@ -10,25 +10,68 @@ export interface User {
   setId(id: string): void;
   getId(): string;
   getEmail(): Email;
+  setEmail(email: Email): void;
   getFirstName(): string;
+  setFirstName(firstName: string): void;
   getLastName(): string;
-  getFullName(): string;
+  setLastName(lastName: string): void;
   getUsername(): string;
   getPassword(): HashedPassword | null;
+  setUpdatedAt(updatedAt: Date): void;
+  getUpdatedAt(): Date | null;
+  toEntity(): UserEntity;
 }
 
 export class UserImpl implements User {
   private id: string | null = null;
 
+  private email: Email;
+
+  private password: HashedPassword;
+
+  private firstName: string;
+
+  private lastName: string;
+
+  private createdAt: Date;
+
+  private updatedAt: Date | null;
+
   constructor(
-    private readonly email: Email,
-    private readonly password: HashedPassword,
-    private readonly firstName: string = '',
-    private readonly lastName: string = '',
-    private readonly createdAt: Date = new Date(),
-    private readonly updatedAt: Date | null = null,
+    email: Email,
+    password: HashedPassword,
+    firstName: string,
+    lastName: string,
+    createdAt: Date,
+    updatedAt: Date | null,
   ) {
+    this.email = email;
+    this.password = password;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
     this.validate();
+  }
+
+  setUpdatedAt(updatedAt: Date): void {
+    this.updatedAt = updatedAt;
+  }
+
+  getUpdatedAt(): Date | null {
+    return this.updatedAt;
+  }
+
+  setEmail(email: Email): void {
+    this.email = email;
+  }
+
+  setFirstName(firstName: string): void {
+    this.firstName = firstName;
+  }
+
+  setLastName(lastName: string): void {
+    this.lastName = lastName;
   }
 
   setId(id: string): void {
@@ -53,10 +96,6 @@ export class UserImpl implements User {
 
   getLastName(): string {
     return this.lastName;
-  }
-
-  getFullName(): string {
-    return `${this.firstName} ${this.lastName}`;
   }
 
   getUsername(): string {
@@ -103,22 +142,7 @@ export class UserImpl implements User {
         ).previousError(error as Error),
       );
     }
-    if (!this.firstName) {
-      exceptions.push(
-        ApplicationException.invalidParameter(
-          'firstName',
-          'First name is required',
-        ),
-      );
-    }
-    if (!this.lastName) {
-      exceptions.push(
-        ApplicationException.invalidParameter(
-          'lastName',
-          'Last name is required',
-        ),
-      );
-    }
+
     if (exceptions.length > 0) {
       throw ApplicationException.invalidParameter(
         'userInput',
@@ -127,5 +151,17 @@ export class UserImpl implements User {
         .exceptions(exceptions)
         .withExceptionCode('USER_INPUT_ERROR');
     }
+  }
+
+  toEntity(): UserEntity {
+    return {
+      _id: this.id,
+      email: this.email.getValue(),
+      firstName: this.firstName,
+      lastName: this.lastName,
+      passwordHash: this.password.getValue(),
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
   }
 }

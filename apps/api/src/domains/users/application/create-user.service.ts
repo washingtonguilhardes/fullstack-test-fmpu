@@ -2,7 +2,7 @@ import { IUserRepository } from '@driveapp/contracts/repositories/user.repositor
 
 import { ApplicationException } from '@/shared/exceptions';
 
-import { Email, HashedPassword, Password, User, UserImpl } from '../domain';
+import { Email, Password, User, UserImpl } from '../domain';
 import { ICreateUserService } from '../interfaces/services/create-user.service';
 import { IValidateUserService } from './validate-user.service';
 
@@ -41,6 +41,7 @@ export class CreateUserServiceImpl implements ICreateUserService {
       user.setId(_id);
       return user;
     } catch (error) {
+      console.log(error);
       throw ApplicationException.invalidParameter(
         'password',
         'Unable to create user, please try again',
