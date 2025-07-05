@@ -1,12 +1,17 @@
-
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 
-import { DriveappRestModule } from './base/driveapp-rest/driveapp-rest.module';
-
+import { AccountModule } from './domains/account';
 
 @Module({
   imports: [
-    DriveappRestModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    MongooseModule.forRoot(process.env.MONGO_URI!),
+    AccountModule,
   ],
   controllers: [],
   providers: [],

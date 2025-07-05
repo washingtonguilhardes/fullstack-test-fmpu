@@ -12,18 +12,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/graphql',
-        destination: `${apiUrlInternal}/graphql`,
-      },
-      {
-        source: '/api/gallery/upload',
-        destination: `${apiUrlInternal}/gallery/upload`,
-      },
-      {
-        source: '/api/gallery/output/:guid',
-        destination: `${apiUrlInternal}/gallery/output/:guid`,
-      },
+        source: '/api/v1/:path*',
+        destination: `${apiUrlInternal}/api/v1/:path*`
+      }
     ];
-  },
+  }
 };
 export default nextConfig;

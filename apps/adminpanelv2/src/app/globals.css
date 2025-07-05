@@ -602,7 +602,6 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.488 0.243 264.376);
-  --bg-main-content: rgba(255, 255, 255, .03);
   --bg-main: linear-gradient(180deg, rgba(0, 136, 255, 0.1) 0%, rgba(5, 0, 255, 0) 100%);
 
   --color-red-50: oklch(97.1% .013 17.38);
@@ -857,5 +856,6 @@
 
   body {
     @apply bg-background text-foreground;
+    background-image: var(--bg-main-content);
   }
 }

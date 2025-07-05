@@ -2,7 +2,10 @@
 
 import { useMemo } from 'react';
 
-import { FileEntity, FileType } from '@driveapp/contracts/entities/files/file.entity';
+import {
+  ArtifactoryEntity,
+  ArtifactoryType
+} from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
 import {
   IconArchive,
@@ -15,7 +18,7 @@ import {
 } from '@tabler/icons-react';
 
 interface FileIconComponentProps {
-  file: FileEntity;
+  file: ArtifactoryEntity;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
@@ -41,7 +44,7 @@ export function FileIconComponent({
   const { name, type } = file;
 
   return useMemo(() => {
-    const isFolder = type === FileType.FOLDER;
+    const isFolder = type === ArtifactoryType.FOLDER;
 
     if (isFolder) {
       return (

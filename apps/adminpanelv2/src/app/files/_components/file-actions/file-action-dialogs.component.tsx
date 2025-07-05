@@ -20,7 +20,7 @@ export function FileActionDialogsComponent() {
         return (
           <DeleteFileComponent
             filename={selectedFile.name}
-            fileId={selectedFile.id}
+            fileId={selectedFile._id}
             open={isActionOpen}
             setOpen={closeAction}
           />
@@ -29,7 +29,7 @@ export function FileActionDialogsComponent() {
         return (
           <RenameFileComponent
             filename={selectedFile.name}
-            fileId={selectedFile.id}
+            fileId={selectedFile._id}
             open={isActionOpen}
             setOpen={closeAction}
           />
@@ -38,7 +38,7 @@ export function FileActionDialogsComponent() {
         return (
           <MoveFileComponent
             filename={selectedFile.name}
-            fileId={selectedFile.id}
+            fileId={selectedFile._id}
             open={isActionOpen}
             setOpen={closeAction}
           />
@@ -47,7 +47,7 @@ export function FileActionDialogsComponent() {
         return (
           <ShareFileComponent
             filename={selectedFile.name}
-            fileId={selectedFile.id}
+            fileId={selectedFile._id}
             open={isActionOpen}
             setOpen={closeAction}
           />
