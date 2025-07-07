@@ -1,2 +1,2 @@
 export * from './artifactory.module';
-export * from './mongoose/artifactory.mongoose.repository';
+export * from './mongoose/artifactory.repository.impl';

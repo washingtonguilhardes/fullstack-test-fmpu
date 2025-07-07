@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { parseErrorResponse } from '@/lib/http/parse-error-response';
 import { restClient } from '@/lib/http/rest.client';
 import { cn } from '@/lib/utils';
 import {
@@ -52,6 +53,8 @@ export function UploadFileUploadComponent(props: {
 
       setCurrentFileIndex(i);
 
+      const truncatedName = truncateName(file.name);
+
       try {
         const formData = new FormData();
         formData.append('file', file);
@@ -59,7 +62,7 @@ export function UploadFileUploadComponent(props: {
         formData.append('mimeType', file.type);
         formData.append('size', file.size.toString());
 
-        const response = await restClient.post('/gallery/upload', formData, {
+        await restClient.post('/artifactory/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           },
@@ -73,15 +76,16 @@ export function UploadFileUploadComponent(props: {
         });
 
         results.push({
-          fileName: file.name,
+          fileName: truncatedName,
           success: true,
           message: 'File uploaded successfully'
         });
       } catch (error: any) {
+        const errorMessage = parseErrorResponse(error);
         results.push({
-          fileName: file.name,
+          fileName: truncatedName,
           success: false,
-          error: error.response?.data?.message || 'Upload failed'
+          error: errorMessage.message
         });
       }
     }

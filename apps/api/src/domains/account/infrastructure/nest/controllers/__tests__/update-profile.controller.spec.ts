@@ -8,11 +8,16 @@ import {
 import {
   DecodeTokenService,
   DecodeTokenServiceRef,
+  TokenPayload,
 } from '@/domains/authentication/interfaces';
 import { UpdateUserDto } from '@driveapp/contracts/entities/users/user.entity';
 
-const mockUpdateUserUseCase = { execute: jest.fn() };
-const mockDecodeTokenService = { execute: jest.fn() };
+const mockUpdateUserUseCase: jest.Mocked<UpdateUserUseCase> = {
+  execute: jest.fn(),
+};
+const mockDecodeTokenService: jest.Mocked<DecodeTokenService> = {
+  execute: jest.fn(),
+};
 
 describe('UpdateProfileController', () => {
   let controller: UpdateProfileController;
@@ -37,7 +42,23 @@ describe('UpdateProfileController', () => {
       lastName: 'Smith',
     };
     const accessToken = 'token123';
-    const mockPayload = { getSubject: () => 'user123' };
+    const mockPayload: jest.Mocked<TokenPayload> = {
+      getSubject: jest.fn().mockReturnValue('user123') as jest.MockedFunction<
+        () => string
+      >,
+      getUsername: jest.fn().mockReturnValue('user123') as jest.MockedFunction<
+        () => string
+      >,
+      getIssuedAt: jest.fn().mockReturnValue(Date.now()) as jest.MockedFunction<
+        () => number
+      >,
+      getType: jest.fn().mockReturnValue('access') as jest.MockedFunction<
+        () => string
+      >,
+      toJSON: jest.fn().mockReturnValue({
+        sub: 'user123',
+      }) as jest.MockedFunction<() => object>,
+    };
 
     mockDecodeTokenService.execute.mockResolvedValue(mockPayload);
     mockUpdateUserUseCase.execute.mockResolvedValue(undefined);

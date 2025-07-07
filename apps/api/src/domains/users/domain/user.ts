@@ -1,4 +1,7 @@
-import { UserEntity } from '@driveapp/contracts/entities/users/user.entity';
+import {
+  UserEntity,
+  UserProfileEntity,
+} from '@driveapp/contracts/entities/users/user.entity';
 
 import { ApplicationException } from '@/shared/exceptions/application.exception';
 
@@ -102,7 +105,7 @@ export class UserImpl implements User {
     return this.email.getValue();
   }
 
-  toJSON() {
+  toJSON(): UserProfileEntity {
     return {
       id: this.id,
       email: this.email.getValue(),

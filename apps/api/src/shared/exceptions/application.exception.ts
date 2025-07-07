@@ -151,6 +151,7 @@ export class ApplicationException extends HttpException {
         this.addMeta('previous-code', error.getExceptionCode());
         this.addMeta('previous-message', error.getMessage());
         this.metas = [...this.metas, ...error.getMetas()];
+        this.exceptionCode = error.getExceptionCode();
       } else if (error instanceof Error) {
         this.addMeta('previous-code', `generic[${error.name}]`);
         this.addMeta('previous-message', error.message);
@@ -270,7 +271,7 @@ export class ApplicationException extends HttpException {
   static internalExecutionError(resourceName: string, message?: string) {
     const error = new ApplicationException(
       message ?? `Internal Error. It was failed to excetute ${resourceName}.`,
-      DefaultApplicationException.EXTERNAL_RESOURCE_EXCEPTION,
+      DefaultApplicationException.INTERNAL_EXECUTION_EXCEPTION,
       HttpStatus.INTERNAL_SERVER_ERROR,
     );
     error.addMeta('resourceName', resourceName);

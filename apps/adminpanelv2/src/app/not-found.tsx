@@ -1,7 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-
 export default async function NotFound(props: {
   params: {
     path: string;
@@ -9,7 +8,7 @@ export default async function NotFound(props: {
 }) {
   const cs = await cookies();
 
-  const sessionId = cs.get('DriveappSessionId')?.value;
+  const sessionId = cs.get('access_token')?.value;
 
   if (!sessionId) {
     return redirect('/login');

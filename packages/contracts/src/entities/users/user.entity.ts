@@ -13,6 +13,8 @@ export interface UserProfileEntity {
   email: string;
   firstName: string;
   lastName: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface SignupNewAccountResult {

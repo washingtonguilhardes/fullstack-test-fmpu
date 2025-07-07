@@ -3,6 +3,7 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import { ThemeProvider } from '@/components/theme-provider';
+import { AccountProviderImpl } from '@/context/account/account.context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import './globals.css';
@@ -33,7 +34,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+          <QueryClientProvider client={queryClient}>
+            <AccountProviderImpl>{children}</AccountProviderImpl>
+          </QueryClientProvider>
         </ThemeProvider>
       </body>
     </html>

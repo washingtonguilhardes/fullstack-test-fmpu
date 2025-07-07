@@ -5,6 +5,12 @@
     "outDir": "./dist",
     "paths": {
       "@/*": ["./src/*"]
-    }
-  }
+    },
+    "types": ["jest", "node", "multer"]
+  },
+  "include": [
+    "src/**/*",
+    "jest.setup.ts",
+    "../../packages/contracts/src/entities/artifactory/dtos"
+  ]
 }

@@ -1,4 +1,4 @@
-import { AuthenticationModule } from '@/domains/authentication/infrastructure/nest/authenticaton.module';
+import { AuthenticationModule } from '@/domains/authentication/infrastructure/nest/authentication.module';
 import {
   IssueTokenService,
   IssueTokenServiceRef,

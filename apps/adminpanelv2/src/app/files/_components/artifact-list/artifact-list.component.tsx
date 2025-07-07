@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 
 import {
@@ -12,6 +14,7 @@ import {
 import { ArtifactGridComponent } from '../artifact-cards';
 import { FileActionDialogsComponent } from '../file-actions/file-action-dialogs.component';
 import { FileActionProvider } from '../file-actions/file-actions.context';
+import { CreateNewFolderComponent } from '../new-folder/create-new-folder.component';
 import { UploadFlowComponent } from '../upload';
 import { ArtifactsTable } from './table';
 import { ViewToggleComponent, ViewMode } from './view-toggle.component';
@@ -30,7 +33,10 @@ export function ArtifactListComponent({
   const [data, setData] = useState<ArtifactoryEntity[]>(files);
   const [activeSegment, setActiveSegment] = useState<string>(segment);
   const [uploadFlow, setUploadFlow] = useState<boolean>(false);
+  const [createNewFolderFlow, setCreateNewFolderFlow] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<ViewMode>('table');
+
+  const router = useRouter();
 
   useEffect(() => {
     if (segment !== activeSegment) {
@@ -52,14 +58,28 @@ export function ArtifactListComponent({
               if (action === 'file') {
                 setUploadFlow(true);
               } else {
-                // Handle folder creation - you can implement this later
-                console.log('Create new folder');
+                setCreateNewFolderFlow(true);
               }
             }}
           />
         </div>
       </div>
-      <UploadFlowComponent open={uploadFlow} onOpenChange={setUploadFlow} />
+      {uploadFlow && (
+        <UploadFlowComponent open={uploadFlow} onOpenChange={setUploadFlow} />
+      )}
+      {createNewFolderFlow && (
+        <CreateNewFolderComponent
+          open={createNewFolderFlow}
+          onOpenChange={setCreateNewFolderFlow}
+          parent={segment}
+          onSuccess={path => {
+            setCreateNewFolderFlow(false);
+            if (path) {
+              router.push(`/files?segment=${path}`);
+            }
+          }}
+        />
+      )}
       <FileActionDialogsComponent />
       {viewMode === 'table' ? (
         <ArtifactsTable files={data} />

@@ -41,7 +41,6 @@ export function CompoundActionButton({ onAction, className }: CompoundActionButt
   }, []);
 
   const handleAction = (action: ActionType) => {
-    // Save to localStorage
     localStorage.setItem(STORAGE_KEY, action);
     setLastUsedAction(action);
     setIsOpen(false);

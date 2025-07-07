@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, beforeEach } from '@jest/globals';
 import { Artifactory } from '../artifactory.entity';
 import {
   ArtifactoryType,
