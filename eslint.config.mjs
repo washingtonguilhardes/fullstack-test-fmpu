@@ -33,7 +33,13 @@ export default defineConfig([
   },
   {
     files: ['**/*.{ts,tsx}'],
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
   },
   tseslint.configs.recommended,
   {

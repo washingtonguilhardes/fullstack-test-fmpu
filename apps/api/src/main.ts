@@ -3,7 +3,7 @@ import helmet from 'helmet';
 
 import { Logger, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './shared/exceptions/app.catch';

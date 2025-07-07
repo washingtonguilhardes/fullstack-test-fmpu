@@ -7,7 +7,7 @@ import { LoginFormComponent } from './_components/login-form.component';
 
 export default async function LoginPage() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken');
+  const accessToken = cookieStore.get('access_token');
 
   if (accessToken) {
     return redirect('/files');

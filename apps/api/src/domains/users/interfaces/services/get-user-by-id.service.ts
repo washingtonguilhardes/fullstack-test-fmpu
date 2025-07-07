@@ -1,4 +1,4 @@
-import { Email, User } from '@/domains/users/domain';
+import { User } from '@/domains/users/domain';
 
 export interface GetUserByIdService {
   execute(id: string): Promise<User | null>;

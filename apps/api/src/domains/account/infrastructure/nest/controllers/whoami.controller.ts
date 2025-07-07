@@ -5,7 +5,7 @@ import {
   ValidateTokenService,
   ValidateTokenServiceRef,
 } from '@/domains/authentication/interfaces';
-import { EmailImpl } from '@/domains/users';
+import { EmailImpl, User } from '@/domains/users';
 import { GetUserByEmailService } from '@/domains/users/interfaces';
 import { GetUserByEmailServiceRef } from '@/domains/users/interfaces/services/get-user-by-email.service';
 import { Controller, Get, Inject } from '@nestjs/common';
@@ -22,13 +22,12 @@ export class WhoAmIController {
   ) {}
 
   @Get()
-  async whoami(@AccessToken() accessToken: string) {
+  async whoami(@AccessToken() accessToken: string): Promise<User> {
     await this.validateTokenService.execute(accessToken);
     const payload = await this.decodeTokenService.execute(accessToken);
     const user = await this.getUserByEmailService.execute(
       new EmailImpl(payload.getUsername()),
     );
-    console.log(user);
     return user;
   }
 }

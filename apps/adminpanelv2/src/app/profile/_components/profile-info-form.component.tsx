@@ -1,33 +1,30 @@
 'use client';
 
 import { Loader2 } from 'lucide-react';
-import { register } from 'module';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { isError } from 'util';
 import { z } from 'zod';
-
-import { UserProfileEntity } from '@driveapp/contracts/entities/users/user.entity';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Card,
-  CardHeader,
-  CardTitle,
+  CardContent,
   CardDescription,
-  CardContent
+  CardHeader,
+  CardTitle
 } from '@/components/ui/card';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useAccount } from '@/context/account/account.context';
 import { parseErrorResponse } from '@/lib/http/parse-error-response';
 import { restClient } from '@/lib/http/rest.client';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,15 +36,15 @@ const profileSchema = z.object({
   email: z.string().email()
 });
 
-export function ProfileInfoFormComponent(props: { user: UserProfileEntity }) {
-  const { user } = props;
+export function ProfileInfoFormComponent() {
+  const { user, sync } = useAccount();
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName
+      email: user?.email ?? '',
+      firstName: user?.firstName ?? '',
+      lastName: user?.lastName ?? ''
     }
   });
 
@@ -59,22 +56,29 @@ export function ProfileInfoFormComponent(props: { user: UserProfileEntity }) {
     error
   } = useMutation({
     mutationFn: (data: z.infer<typeof profileSchema>) => {
+      if (!user?.id) {
+        throw new Error('User not found');
+      }
       return restClient.patch(`/account/profile/${user.id}`, data, {
         withCredentials: true
       });
     }
   });
 
-  const onSubmit = (data: z.infer<typeof profileSchema>) => {
-    updateProfile(data);
-  };
+  const onSubmit = (data: z.infer<typeof profileSchema>) => updateProfile(data);
+
+  useEffect(() => {
+    // after the mutation is successful, we need to sync the user data but only needed
+    // when left the profile page, to avoid unnecessary re-renders
+    return () => {
+      if (isSuccess) sync();
+    };
+  }, [isSuccess, sync]);
 
   const errorMessage = useMemo(
     () => error && parseErrorResponse(error),
     [isError, error]
   );
-
-  console.log(form.formState);
 
   return (
     <Card>

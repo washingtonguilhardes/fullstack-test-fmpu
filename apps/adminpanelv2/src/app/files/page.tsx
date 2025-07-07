@@ -12,9 +12,9 @@ const files: ArtifactoryEntity[] = [
     type: ArtifactoryType.FOLDER,
     path: 'documents',
     size: 0,
-    created_at: new Date(),
-    updated_at: new Date(),
-    user_id: '1'
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1'
   },
   {
     _id: '2',
@@ -22,9 +22,9 @@ const files: ArtifactoryEntity[] = [
     type: ArtifactoryType.FILE,
     path: 'documents/presentation.pdf',
     size: 2048576,
-    created_at: new Date(),
-    updated_at: new Date(),
-    user_id: '1'
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1'
   },
   {
     _id: '3',
@@ -32,9 +32,9 @@ const files: ArtifactoryEntity[] = [
     type: ArtifactoryType.FILE,
     path: 'photos/vacation-photo.jpg',
     size: 3145728,
-    created_at: new Date(),
-    updated_at: new Date(),
-    user_id: '1'
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1'
   },
   {
     _id: '4',
@@ -42,9 +42,9 @@ const files: ArtifactoryEntity[] = [
     type: ArtifactoryType.FILE,
     path: 'videos/meeting-recording.mp4',
     size: 52428800,
-    created_at: new Date(),
-    updated_at: new Date(),
-    user_id: '1'
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1'
   },
   {
     _id: '5',
@@ -52,9 +52,9 @@ const files: ArtifactoryEntity[] = [
     type: ArtifactoryType.FILE,
     path: 'backups/project-backup.zip',
     size: 104857600,
-    created_at: new Date(),
-    updated_at: new Date(),
-    user_id: '1'
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1'
   },
   {
     _id: '6',
@@ -62,9 +62,9 @@ const files: ArtifactoryEntity[] = [
     type: ArtifactoryType.FILE,
     path: 'audio/podcast-episode.mp3',
     size: 15728640,
-    created_at: new Date(),
-    updated_at: new Date(),
-    user_id: '1'
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1'
   },
   {
     _id: '7',
@@ -72,9 +72,9 @@ const files: ArtifactoryEntity[] = [
     type: ArtifactoryType.FOLDER,
     path: 'photos',
     size: 0,
-    created_at: new Date(),
-    updated_at: new Date(),
-    user_id: '1'
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1'
   },
   {
     _id: '8',
@@ -82,9 +82,9 @@ const files: ArtifactoryEntity[] = [
     type: ArtifactoryType.FILE,
     path: 'documents/report.docx',
     size: 1048576,
-    created_at: new Date(),
-    updated_at: new Date(),
-    user_id: '1'
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1'
   }
 ];
 

@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,7 @@ const loginSchema = z.object({
 
 export function LoginFormComponent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { register, handleSubmit } = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -48,7 +49,9 @@ export function LoginFormComponent() {
   const onSubmit = (data: z.infer<typeof loginSchema>) => {
     login(data, {
       onSuccess: () => {
-        router.push('/files');
+        // Redirect to the original requested page or default to /files
+        const redirectTo = searchParams.get('redirect') || '/files';
+        router.push(redirectTo);
       }
     });
   };
