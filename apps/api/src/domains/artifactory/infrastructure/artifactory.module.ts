@@ -24,8 +24,12 @@ import {
   GetFolderByPathServiceImpl,
   ListArtifactoryByOwnerServiceImpl,
   ListFilesByPathServiceImpl,
+  MoveArtifactoryServiceImpl,
   RemoveFileServiceImpl,
+  RenameArtifactoryServiceImpl,
   StoreFileUsecaseImpl,
+  UpdateFileServiceImpl,
+  UpdateFolderServiceImpl,
 } from '../application';
 import { CreateNewFolderServiceImpl } from '../application/services/create-new-folder.service.impl';
 import { DeleteFolderByIdServiceImpl } from '../application/services/delete-folder-by-id.service.impl';
@@ -41,11 +45,17 @@ import {
   ListArtifactoryByOwnerServiceRef,
   ListFilesByPathService,
   ListFilesByPathServiceRef,
+  MoveArtifactoryServiceRef,
   RemoveFileService,
   RemoveFileServiceRef,
+  RemoveFolderServiceRef,
+  RenameArtifactoryServiceRef,
   StorageFileAdapter,
   StorageFileAdapterRef,
   StoreFileUsecaseRef,
+  UpdateFileService,
+  UpdateFileServiceRef,
+  UpdateFolderServiceRef,
 } from '../interfaces';
 import { CreateNewFolderServiceRef } from '../interfaces/create-new-folder.service';
 import { DeleteFolderByIdServiceRef } from '../interfaces/delete-folder-by-id.service';
@@ -59,7 +69,9 @@ import { DeleteFileController } from './controllers/delete-file.controller';
 import { DeleteFolderController } from './controllers/delete-folder.controller';
 import { GetFolderByPathController } from './controllers/get-folder-by-path.controller';
 import { ListArtifactoryByOwnerController } from './controllers/list-artifactory-by-owner.controller';
+import { MoveArtifactoryController } from './controllers/move-file.controller';
 import { NewFolderController } from './controllers/new-folder.controller';
+import { RenameFileController } from './controllers/rename-file.controller';
 import { UploadController } from './controllers/upload.controller';
 import { ArtifactoryMongooseRepositoryImpl } from './mongoose/artifactory.repository.impl';
 import {
@@ -76,6 +88,8 @@ import {
     GetFolderByPathController,
     DeleteFileController,
     DeleteFolderController,
+    MoveArtifactoryController,
+    RenameFileController,
   ],
   imports: [
     SecurityModule,
@@ -256,6 +270,78 @@ import {
         DeleteFileByIdServiceRef,
         RemoveFileServiceRef,
         OwnershipValidationServiceRef,
+      ],
+    },
+    {
+      provide: UpdateFileServiceRef,
+      useFactory: (artifactoryRepository: ArtifactoryRepository) =>
+        new UpdateFileServiceImpl(artifactoryRepository),
+      inject: [ArtifactoryRepositoryRef],
+    },
+    {
+      provide: UpdateFolderServiceRef,
+      useFactory: (artifactoryRepository: ArtifactoryRepository) =>
+        new UpdateFolderServiceImpl(artifactoryRepository),
+      inject: [ArtifactoryRepositoryRef],
+    },
+    {
+      provide: MoveArtifactoryServiceRef,
+      useFactory: (
+        getFileByIdService: GetFileByIdService,
+        getFolderByIdService: GetFolderByIdService,
+        listFilesByPathService: ListFilesByPathService,
+        storageFileAdapter: StorageFileAdapter,
+        ownershipValidationService: OwnershipValidationService,
+        updateFileService: UpdateFileService,
+      ) =>
+        new MoveArtifactoryServiceImpl(
+          getFileByIdService,
+          getFolderByIdService,
+          listFilesByPathService,
+          storageFileAdapter,
+          ownershipValidationService,
+          updateFileService,
+        ),
+      inject: [
+        GetFileByIdServiceRef,
+        GetFolderByIdServiceRef,
+        ListFilesByPathServiceRef,
+        StorageFileAdapterRef,
+        OwnershipValidationServiceRef,
+        UpdateFileServiceRef,
+      ],
+    },
+    {
+      provide: RenameArtifactoryServiceRef,
+      useFactory: (
+        getFileByIdService: GetFileByIdService,
+        getFolderByIdService: GetFolderByIdService,
+        listFilesByPathService: ListFilesByPathService,
+        listFoldersByPathService: any,
+        storageFileAdapter: StorageFileAdapter,
+        ownershipValidationService: OwnershipValidationService,
+        updateFileService: UpdateFileService,
+        updateFolderService: any,
+      ) =>
+        new RenameArtifactoryServiceImpl(
+          getFileByIdService,
+          getFolderByIdService,
+          listFilesByPathService,
+          listFoldersByPathService,
+          storageFileAdapter,
+          ownershipValidationService,
+          updateFileService,
+          updateFolderService,
+        ),
+      inject: [
+        GetFileByIdServiceRef,
+        GetFolderByIdServiceRef,
+        ListFilesByPathServiceRef,
+        ListFoldersByPathServiceRef,
+        StorageFileAdapterRef,
+        OwnershipValidationServiceRef,
+        UpdateFileServiceRef,
+        UpdateFolderServiceRef,
       ],
     },
   ],

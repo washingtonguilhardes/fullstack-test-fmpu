@@ -48,24 +48,31 @@ export class ListArtifactoryByOwnerServiceImpl
 
       let artifactoryEntities: ArtifactoryEntity[] = [];
 
-      if (params.artifactoryName) {
-        artifactoryEntities =
-          await this.artifactoryRepository.findAllByUserIdPathAndName(
-            params.ownerId,
-            targetPath.getValue(),
-            params.artifactoryName,
-            targetPath.isRoot(),
-          );
+      if (params.includeAll) {
+        artifactoryEntities = await this.artifactoryRepository.findAllByUserId(
+          params.ownerId,
+          params,
+        );
       } else {
-        artifactoryEntities =
-          await this.artifactoryRepository.findAllByUserIdAndPath(
-            params.ownerId,
-            targetPath.getValue(),
-            targetPath.isRoot(),
-          );
+        if (params.artifactoryName) {
+          artifactoryEntities =
+            await this.artifactoryRepository.findAllByUserIdPathAndName(
+              params.ownerId,
+              params.pathId,
+              params.artifactoryName,
+              targetPath.isRoot(),
+            );
+        } else {
+          console.log('params.pathId', params.pathId);
+          artifactoryEntities =
+            await this.artifactoryRepository.findAllByUserIdAndPath(
+              params.ownerId,
+              params.pathId,
+              targetPath.isRoot(),
+            );
+        }
       }
 
-      // Filter and map entities to domain objects
       const files = artifactoryEntities
         .filter((entity) => entity.type === ArtifactoryType.FILE)
         .map((entity) => FileFactory.fromEntity(entity));

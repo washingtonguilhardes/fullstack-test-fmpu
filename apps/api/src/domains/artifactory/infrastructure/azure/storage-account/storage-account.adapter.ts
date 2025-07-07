@@ -89,4 +89,19 @@ export class AzureStorageAccountAdapter implements StorageFileAdapter {
       },
     });
   }
+
+  async move(sourcePath: Path, targetPath: Path): Promise<boolean> {
+    const containerClient = this.storageAccount.getContainerClient(
+      this.containerName,
+    );
+    const sourceBlobClient = containerClient.getBlockBlobClient(
+      this.parseBucketPath(sourcePath),
+    );
+    const targetBlobClient = containerClient.getBlockBlobClient(
+      this.parseBucketPath(targetPath),
+    );
+    await targetBlobClient.beginCopyFromURL(sourceBlobClient.url);
+    await sourceBlobClient.deleteIfExists();
+    return true;
+  }
 }

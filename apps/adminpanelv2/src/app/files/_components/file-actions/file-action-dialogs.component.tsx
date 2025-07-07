@@ -2,13 +2,10 @@
 
 import { useMemo } from 'react';
 
-import { useFileSearch } from '@/context/file-search/file-search.context';
-
 import { DeleteFileComponent } from './delete-file.component';
-import { useFileActions, FileAction } from './file-actions.context';
+import { FileAction, useFileActions } from './file-actions.context';
 import { MoveFileComponent } from './move-file.component';
 import { RenameFileComponent } from './rename-file.component';
-import { ShareFileComponent } from './share-file.component';
 
 export function FileActionDialogsComponent(props: { onReloadFileList: () => void }) {
   const { onReloadFileList } = props;
@@ -39,6 +36,9 @@ export function FileActionDialogsComponent(props: { onReloadFileList: () => void
             fileId={fileId}
             open={isActionOpen}
             setOpen={closeAction}
+            onSuccess={() => {
+              onReloadFileList();
+            }}
           />
         );
       case FileAction.MOVE:
@@ -48,15 +48,9 @@ export function FileActionDialogsComponent(props: { onReloadFileList: () => void
             fileId={fileId}
             open={isActionOpen}
             setOpen={closeAction}
-          />
-        );
-      case FileAction.SHARE:
-        return (
-          <ShareFileComponent
-            filename={selectedFile.name}
-            fileId={fileId}
-            open={isActionOpen}
-            setOpen={closeAction}
+            onSuccess={() => {
+              onReloadFileList();
+            }}
           />
         );
       case FileAction.DOWNLOAD:

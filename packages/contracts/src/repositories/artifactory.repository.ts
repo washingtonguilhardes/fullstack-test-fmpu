@@ -1,4 +1,5 @@
 import { ArtifactoryEntity } from '../entities/artifactory/artifactory.entity';
+import { ListArtifactoryParams } from '../entities/artifactory/dtos/list.dto';
 
 export interface ArtifactoryRepository {
   findById(id: string): Promise<ArtifactoryEntity | null>;
@@ -12,14 +13,18 @@ export interface ArtifactoryRepository {
   delete(ids: string[]): Promise<void>;
   findAllByUserIdAndPath(
     userId: string,
-    path: string | null,
+    parentId: string | null,
     root?: boolean,
   ): Promise<ArtifactoryEntity[]>;
   findAllByUserIdPathAndName(
     userId: string,
-    path: string,
+    parentId: string,
     namePattern: string,
     root?: boolean,
+  ): Promise<ArtifactoryEntity[]>;
+  findAllByUserId(
+    userId: string,
+    params?: ListArtifactoryParams,
   ): Promise<ArtifactoryEntity[]>;
 }
 

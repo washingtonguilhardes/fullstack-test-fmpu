@@ -47,7 +47,7 @@ export class StoreFileUsecaseImpl implements StoreFileUsecase {
         name: fileDto.name,
         size: fileDto.size,
         ownerId: owner.getId(),
-        parentId: fileDto.parentId,
+        parentId: fileDto.parentId || null,
         checksum: this.checksumService.calculate(fileDto.buffer),
         mimeType: fileDto.mimeType,
         createdAt: new Date(),

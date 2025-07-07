@@ -2,6 +2,7 @@ import console from 'console';
 import { FilterQuery, Model } from 'mongoose';
 
 import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import { ListArtifactoryParams } from '@driveapp/contracts/entities/artifactory/dtos/list.dto';
 import { ArtifactoryRepository } from '@driveapp/contracts/repositories/artifactory.repository';
 
 import { ArtifactoryMongoose } from './artifactory.shema';
@@ -25,7 +26,7 @@ export class ArtifactoryMongooseRepositoryImpl
   ): Promise<ArtifactoryEntity[]> {
     const query: FilterQuery<ArtifactoryMongoose> = {
       userId,
-      path: { $regex: `^${path}` },
+      parentId: path ? path : null,
       ...(root ? { parentId: null } : {}),
     };
     console.log({ query });
@@ -40,7 +41,7 @@ export class ArtifactoryMongooseRepositoryImpl
   ): Promise<ArtifactoryEntity[]> {
     const query: FilterQuery<ArtifactoryMongoose> = {
       userId,
-      path: { $regex: `^${path}` },
+      parentId: path ? path : null,
       name: { $regex: `^${namePattern}`, $options: 'i' },
       ...(root ? { parentId: { $exists: false } } : {}),
     };
@@ -75,5 +76,20 @@ export class ArtifactoryMongooseRepositoryImpl
 
   async delete(ids: string[]): Promise<void> {
     await this.artifactoryModel.deleteMany({ _id: { $in: ids } });
+  }
+
+  findAllByUserId(
+    userId: string,
+    params?: ListArtifactoryParams,
+  ): Promise<ArtifactoryEntity[]> {
+    const query: FilterQuery<ArtifactoryMongoose> = {
+      userId,
+      ...(params?.type ? { type: params.type } : {}),
+      ...(params?.artifactoryName
+        ? { name: { $regex: `^${params.artifactoryName}`, $options: 'i' } }
+        : {}),
+      ...(params?.pathId ? { parentId: params.pathId } : {}),
+    };
+    return this.artifactoryModel.find(query).lean();
   }
 }

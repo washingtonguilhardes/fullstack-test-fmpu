@@ -54,10 +54,6 @@ export function FileActionsDropdownComponent({
           <IconDownload className="mr-2 h-4 w-4" />
           Download
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleAction(FileAction.SHARE)}>
-          <IconShare className="mr-2 h-4 w-4" />
-          Share
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleAction(FileAction.RENAME)}>
           <IconEdit className="mr-2 h-4 w-4" />
           Rename
