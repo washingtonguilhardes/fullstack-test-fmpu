@@ -22,8 +22,6 @@ export class CreateNewFileServiceImpl implements CreateNewFileService {
       existingItem.getPath().equals(filePath),
     );
 
-    console.log(filePath.getValue());
-
     if (existingFile) {
       throw ApplicationException.noDuplicatedAllowed(
         `A file with the name "${file.getName()}" already exists under ${filePath.getRelativePath()}`,
@@ -39,6 +37,8 @@ export class CreateNewFileServiceImpl implements CreateNewFileService {
     fileEntity.updatedAt = now;
 
     fileEntity.type = ArtifactoryType.FILE;
+
+    console.log('fileEntity', fileEntity);
 
     try {
       const { _id = '' } = await this.artifactoryRepository.create(fileEntity);

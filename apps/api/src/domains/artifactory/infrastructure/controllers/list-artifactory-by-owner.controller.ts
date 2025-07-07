@@ -1,3 +1,5 @@
+import { ArtifactoryType } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+
 import {
   DecodeTokenService,
   DecodeTokenServiceRef,
@@ -10,7 +12,7 @@ import {
   ListArtifactoryByOwnerServiceRef,
 } from '../../interfaces';
 
-@Controller('/artifactory/list-by-owner')
+@Controller('/files')
 export class ListArtifactoryByOwnerController {
   constructor(
     @Inject(ListArtifactoryByOwnerServiceRef)
@@ -24,6 +26,8 @@ export class ListArtifactoryByOwnerController {
     @AccessToken() accessToken: string,
     @Query('parentId') parentId?: string,
     @Query('artifactoryName') artifactoryName?: string,
+    @Query('includeAll') includeAll?: boolean,
+    @Query('type') type?: ArtifactoryType,
   ) {
     const tokenPayload = await this.decodeTokenService.execute(accessToken);
     const ownerId = tokenPayload.getSubject();
@@ -32,6 +36,8 @@ export class ListArtifactoryByOwnerController {
       ownerId,
       pathId: parentId,
       artifactoryName,
+      includeAll,
+      type,
     });
   }
 }

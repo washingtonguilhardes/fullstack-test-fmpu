@@ -10,6 +10,7 @@ import { Path, PathFactory, PathImpl } from './path';
 
 export interface Folder {
   getName(): string;
+  setName(name: string): void;
   incrementSize(size: number): void;
   decrementSize(size: number): void;
   toJSON(): FolderDto & { path: string };
@@ -19,6 +20,7 @@ export interface Folder {
   setId(id: string): void;
   getId(): string;
   getOwnerId(): string;
+  setParentId(parentId: string): void;
   validate(): void;
 }
 
@@ -49,6 +51,14 @@ export class FolderImpl implements Folder {
     this.id = data.id || '';
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
+  }
+
+  setName(name: string): void {
+    this.name = name;
+  }
+
+  setParentId(parentId: string): void {
+    this.parentId = parentId;
   }
 
   setPath(path: Path): void {

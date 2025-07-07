@@ -7,6 +7,7 @@ export interface Path {
   getRelativePath(): string;
   equals(path: Path): boolean;
   join(path: Path): Path;
+  getParent(): Path;
   isRoot(): boolean;
   toJSON(): string;
 }
@@ -16,6 +17,15 @@ export class PathImpl implements Path {
     private path: string,
     private root: boolean = false,
   ) {}
+
+  getParent(): Path {
+    const pathParts = this.path.split('/').filter((part) => part !== '');
+    if (pathParts.length <= 1) {
+      return new PathImpl('/', true);
+    }
+    const parentPath = '/' + pathParts.slice(0, -1).join('/');
+    return new PathImpl(parentPath);
+  }
 
   join(path: Path): Path {
     this.path = join(path.getValue(), this.path);

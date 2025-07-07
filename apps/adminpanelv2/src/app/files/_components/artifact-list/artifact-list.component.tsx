@@ -43,7 +43,7 @@ export function ArtifactListComponent() {
     queryKey: ['files', folder?.id, search, segment],
     queryFn: () => {
       return restClient
-        .get<ListArtifactoryByOwnerDto>('/artifactory/list-by-owner', {
+        .get<ListArtifactoryByOwnerDto>('/files', {
           params: {
             parentId: folder?.id,
             artifactoryName: search
@@ -58,6 +58,7 @@ export function ArtifactListComponent() {
       ...(data?.files ?? [])
     ];
   }, [data]);
+  console.log({ artifacts });
 
   useEffect(() => {
     if (folder?.id && !isLoading) {

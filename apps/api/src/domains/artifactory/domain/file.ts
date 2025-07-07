@@ -10,6 +10,7 @@ import { Folder } from './folder';
 
 export interface File {
   getName(): string;
+  setName(name: string): void;
   setId(id: string): void;
   getId(): string;
   setPath(path: Path): void;
@@ -20,7 +21,8 @@ export interface File {
   validate(): void;
   toJSON(): FileDto;
   toEntity(): ArtifactoryEntity;
-  moveToFolder(folder: Folder): void;
+  setParentId(parentId: string): void;
+  getParentId(): string;
 }
 
 export class FileImpl implements File {
@@ -75,6 +77,10 @@ export class FileImpl implements File {
     return this.name;
   }
 
+  setName(name: string): void {
+    this.name = name;
+  }
+
   setPath(path: Path): void {
     this.path = path;
   }
@@ -83,9 +89,12 @@ export class FileImpl implements File {
     return this.path;
   }
 
-  moveToFolder(folder: Folder): void {
-    this.parentId = folder.getId();
-    this.path = folder.getPath().join(this.path);
+  setParentId(parentId: string): void {
+    this.parentId = parentId;
+  }
+
+  getParentId(): string {
+    return this.parentId;
   }
 
   setId(id: string) {
@@ -171,6 +180,7 @@ export class FileImpl implements File {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       checksum: this.checksum,
+      parentId: this.parentId,
       type: this.type,
     };
   }
@@ -181,7 +191,7 @@ export class FileImpl implements File {
       name: this.name,
       type: this.type,
       userId: this.ownerId,
-      parentId: this.parentId,
+      parentId: this.parentId || null,
       path: this.path.getValue(),
       mimeType: this.mimeType,
       size: this.size,

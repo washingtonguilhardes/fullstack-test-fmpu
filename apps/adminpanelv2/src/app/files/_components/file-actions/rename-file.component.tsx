@@ -1,35 +1,47 @@
 import { useState } from 'react';
 
 import { ConfirmationDialog } from '@/components/templates';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { parseErrorResponse } from '@/lib/http/parse-error-response';
+import { restClient } from '@/lib/http/rest.client';
 import { IconLoader } from '@tabler/icons-react';
+import { useMutation } from '@tanstack/react-query';
 
 export interface RenameFileComponentProps {
   filename: string;
   fileId: string;
   open: boolean;
   setOpen: (open: boolean) => void;
+  onSuccess: () => void;
 }
 
 export function RenameFileComponent(props: RenameFileComponentProps) {
-  const { filename, fileId, open, setOpen } = props;
+  const { filename, fileId, open, setOpen, onSuccess } = props;
 
-  const [isLoading, setIsLoading] = useState(false);
   const [newFilename, setNewFilename] = useState(filename);
+
+  const {
+    mutate: renameFile,
+    isPending,
+    isSuccess,
+    error
+  } = useMutation({
+    mutationKey: ['rename-file', fileId],
+    mutationFn: (newFilename: string) =>
+      restClient.put(`/files/${fileId}/rename`, { newName: newFilename }),
+    onSuccess: () => onSuccess()
+  });
 
   const handleRename = () => {
     if (!newFilename.trim() || newFilename === filename) {
       return;
     }
-
-    setIsLoading(true);
-    console.log('rename', fileId, 'to', newFilename);
-    setTimeout(() => {
-      setIsLoading(false);
-      setOpen(false);
-    }, 2000);
+    renameFile(newFilename);
   };
+
+  const errorMessage = error && parseErrorResponse(error);
 
   return (
     <ConfirmationDialog
@@ -46,22 +58,42 @@ export function RenameFileComponent(props: RenameFileComponentProps) {
               value={newFilename}
               onChange={e => setNewFilename(e.target.value)}
               placeholder="Enter new filename"
-              disabled={isLoading}
+              disabled={isPending}
             />
           </div>
+          {errorMessage && (
+            <Alert variant="destructive">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{errorMessage.message}</AlertDescription>
+            </Alert>
+          )}
+          {isSuccess && (
+            <Alert variant="success">
+              <AlertTitle>Success</AlertTitle>
+              <AlertDescription>File renamed successfully</AlertDescription>
+            </Alert>
+          )}
         </div>
       }
       open={open}
       onOpenChange={setOpen}
       confirm={
-        <Button
-          onClick={handleRename}
-          disabled={isLoading || !newFilename.trim() || newFilename === filename}
-        >
-          {isLoading && <IconLoader className="animate-spin" />} Rename
-        </Button>
+        <>
+          {isSuccess ? (
+            <Button variant="secondary" onClick={() => setOpen(false)}>
+              Close
+            </Button>
+          ) : (
+            <Button
+              onClick={handleRename}
+              disabled={isPending || !newFilename.trim() || newFilename === filename}
+            >
+              {isPending && <IconLoader className="animate-spin" />} Rename
+            </Button>
+          )}
+        </>
       }
-      cancel={<Button variant="secondary">Cancel</Button>}
+      cancel={!isSuccess && <Button variant="secondary">Cancel</Button>}
     />
   );
 }
