@@ -1,15 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import { ArtifactoryDto } from '@driveapp/contracts/entities/artifactory/dtos/artifactory.dto';
+import { ListArtifactoryByOwnerDto } from '@driveapp/contracts/entities/artifactory/dtos/list.dto';
 
 import {
   CompoundActionButton,
   type ActionType
 } from '@/components/molecules/compound-action-button';
+import { useFileSearch } from '@/context/file-search/file-search.context';
+import { restClient } from '@/lib/http/rest.client';
+import { useQuery } from '@tanstack/react-query';
 
 import { ArtifactGridComponent } from '../artifact-cards';
 import { FileActionDialogsComponent } from '../file-actions/file-action-dialogs.component';
@@ -17,33 +21,43 @@ import { FileActionProvider } from '../file-actions/file-actions.context';
 import { CreateNewFolderComponent } from '../new-folder/create-new-folder.component';
 import { UploadFlowComponent } from '../upload';
 import { ArtifactsTable } from './table';
-import { ViewToggleComponent, ViewMode } from './view-toggle.component';
+import { ViewMode, ViewToggleComponent } from './view-toggle.component';
 
-interface ArtifactListComponentProps {
-  files: ArtifactoryEntity[];
-  segment?: string;
-  preview?: boolean;
-}
-
-export function ArtifactListComponent({
-  files = [],
-  segment = '',
-  preview = false
-}: ArtifactListComponentProps) {
-  const [data, setData] = useState<ArtifactoryEntity[]>(files);
-  const [activeSegment, setActiveSegment] = useState<string>(segment);
+export function ArtifactListComponent() {
+  const { folder, segment } = useFileSearch();
   const [uploadFlow, setUploadFlow] = useState<boolean>(false);
   const [createNewFolderFlow, setCreateNewFolderFlow] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<ViewMode>('table');
 
+  const { search } = useFileSearch();
+
   const router = useRouter();
 
-  useEffect(() => {
-    if (segment !== activeSegment) {
-      console.log('segment changed from initial', segment);
-      setActiveSegment(segment);
+  const { data, isLoading, refetch } = useQuery<ListArtifactoryByOwnerDto>({
+    queryKey: ['files', folder?.id, search],
+    queryFn: () => {
+      return restClient
+        .get<ListArtifactoryByOwnerDto>('/artifactory/list-by-owner', {
+          params: {
+            parentId: folder?.id,
+            artifactoryName: search
+          }
+        })
+        .then(res => res.data);
     }
-  }, [segment, activeSegment]);
+  });
+  const artifacts = useMemo(() => {
+    return [
+      ...(data?.folders ?? []).filter(f => (folder?.id ? f.id !== folder?.id : true)),
+      ...(data?.files ?? [])
+    ];
+  }, [data]);
+
+  useEffect(() => {
+    if (folder?.id && !isLoading) {
+      refetch();
+    }
+  }, [folder]);
 
   return (
     <FileActionProvider>
@@ -65,13 +79,20 @@ export function ArtifactListComponent({
         </div>
       </div>
       {uploadFlow && (
-        <UploadFlowComponent open={uploadFlow} onOpenChange={setUploadFlow} />
+        <UploadFlowComponent
+          open={uploadFlow}
+          onOpenChange={setUploadFlow}
+          parent={folder?.id ?? ''}
+          onUpload={() => {
+            refetch();
+          }}
+        />
       )}
       {createNewFolderFlow && (
         <CreateNewFolderComponent
           open={createNewFolderFlow}
           onOpenChange={setCreateNewFolderFlow}
-          parent={segment}
+          parent={folder?.id ?? ''}
           onSuccess={path => {
             setCreateNewFolderFlow(false);
             if (path) {
@@ -82,9 +103,9 @@ export function ArtifactListComponent({
       )}
       <FileActionDialogsComponent />
       {viewMode === 'table' ? (
-        <ArtifactsTable files={data} />
+        <ArtifactsTable files={artifacts} />
       ) : (
-        <ArtifactGridComponent files={data} />
+        <ArtifactGridComponent files={artifacts} />
       )}
     </FileActionProvider>
   );

@@ -11,3 +11,5 @@ export * from './list-folders-by-path.service';
 export * from './list-artifactory-by-owner.service';
 export * from './storage-file-adapter';
 export * from './get-folder-by-id.service';
+export * from './get-file-by-id.service';
+export * from './delete-file-by-id.service';

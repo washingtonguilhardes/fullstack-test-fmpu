@@ -1,5 +1,3 @@
-import path from 'path';
-
 import { ArtifactoryType } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
 import { ArtifactoryRepository } from '@driveapp/contracts/repositories/artifactory.repository';
 
@@ -8,7 +6,6 @@ import { ApplicationException } from '@/shared';
 import { File, Path, PathFactory } from '../../domain';
 import { CreateNewFileService } from '../../interfaces/create-new-file.service';
 import { ListFilesByPathService } from '../../interfaces/list-files-by-path.service';
-import { ListFoldersByPathService } from '../../interfaces/list-folders-by-path.service';
 
 export class CreateNewFileServiceImpl implements CreateNewFileService {
   constructor(

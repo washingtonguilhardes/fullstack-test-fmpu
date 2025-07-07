@@ -22,7 +22,7 @@ export class ListArtifactoryByOwnerController {
   @Get()
   async listArtifactoryByOwner(
     @AccessToken() accessToken: string,
-    @Query('pathId') pathId?: string,
+    @Query('parentId') parentId?: string,
     @Query('artifactoryName') artifactoryName?: string,
   ) {
     const tokenPayload = await this.decodeTokenService.execute(accessToken);
@@ -30,7 +30,7 @@ export class ListArtifactoryByOwnerController {
 
     return await this.listArtifactoryByOwnerService.execute({
       ownerId,
-      pathId,
+      pathId: parentId,
       artifactoryName,
     });
   }

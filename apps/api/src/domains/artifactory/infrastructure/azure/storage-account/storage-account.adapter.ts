@@ -20,7 +20,12 @@ export class AzureStorageAccountAdapter implements StorageFileAdapter {
     private readonly containerName: string = 'files',
   ) {}
 
-  async getTemporaryUrl(bucketPath: string): Promise<string> {
+  private parseBucketPath(path: Path): string {
+    return path.getValue().split('/').slice(1).join('/');
+  }
+
+  async getTemporaryUrl(path: Path): Promise<string> {
+    const bucketPath = this.parseBucketPath(path);
     const userDelegationKey = await this.storageAccount.getUserDelegationKey(
       new Date(),
       new Date(
@@ -43,10 +48,11 @@ export class AzureStorageAccountAdapter implements StorageFileAdapter {
     return `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${bucketPath}?${sas.toString()}`;
   }
 
-  async delete(bucketPath: string): Promise<boolean> {
+  async delete(path: Path): Promise<boolean> {
     const containerClient = this.storageAccount.getContainerClient(
       this.containerName,
     );
+    const bucketPath = this.parseBucketPath(path);
     const blockBlobClient = containerClient.getBlockBlobClient(bucketPath);
     await blockBlobClient.delete();
     return true;
@@ -59,8 +65,7 @@ export class AzureStorageAccountAdapter implements StorageFileAdapter {
     await containerClient.createIfNotExists();
 
     const path = file.getPath();
-
-    const bucketPath = path.getValue().split('/').slice(1).join('/');
+    const bucketPath = this.parseBucketPath(path);
 
     const blockBlobClient = containerClient.getBlockBlobClient(bucketPath);
     await blockBlobClient.uploadData(buffer, {

@@ -8,9 +8,5 @@
     },
     "types": ["jest", "node", "multer"]
   },
-  "include": [
-    "src/**/*",
-    "jest.setup.ts",
-    "../../packages/contracts/src/entities/artifactory/dtos"
-  ]
+  "include": ["src/**/*", "jest.setup.ts"]
 }

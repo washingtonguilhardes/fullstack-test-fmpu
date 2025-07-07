@@ -2,9 +2,10 @@ import { ArtifactoryType } from '@driveapp/contracts/entities/artifactory/artifa
 import { FolderDto } from '@driveapp/contracts/entities/artifactory/dtos/folder.dto';
 import { ArtifactoryRepository } from '@driveapp/contracts/repositories/artifactory.repository';
 
-import { ApplicationException } from '@/shared';
+import { ApplicationException, OwnershipValidationService } from '@/shared';
 
 import { Folder, FolderImpl, Path, PathFactory } from '../../domain';
+import { GetFolderByIdService } from '../../interfaces';
 import { CreateNewFolderService } from '../../interfaces/create-new-folder.service';
 import { ListFoldersByPathService } from '../../interfaces/list-folders-by-path.service';
 
@@ -12,15 +13,23 @@ export class CreateNewFolderServiceImpl implements CreateNewFolderService {
   constructor(
     private readonly artifactoryRepository: ArtifactoryRepository,
     private readonly listFoldersByPathService: ListFoldersByPathService,
+    private readonly ownershipValidationService: OwnershipValidationService,
+    private readonly getFolderByIdService: GetFolderByIdService,
   ) {}
 
   private async getParentPath(folder: FolderDto): Promise<Path> {
-    return PathFactory.fromEntity({ path: folder.ownerId });
+    const parent = await this.getFolderByIdService.execute(folder.parentId);
+    return parent.getPath();
   }
 
   private async getPath(folder: FolderDto): Promise<Path> {
+    console.log({ folder });
+    const path = PathFactory.fromName(folder.name);
+    if (!folder.parentId) {
+      return path.join(PathFactory.root(folder.ownerId));
+    }
     const parentPath = await this.getParentPath(folder);
-    return PathFactory.fromName(folder.name).join(parentPath);
+    return path.join(parentPath);
   }
 
   async execute(folderDto: FolderDto): Promise<Folder> {

@@ -3,6 +3,8 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import { ArtifactoryDto } from '@driveapp/contracts/entities/artifactory/dtos/artifactory.dto';
+import { FileDto } from '@driveapp/contracts/entities/artifactory/dtos/file.dto';
 
 export enum FileAction {
   RENAME = 'rename',
@@ -13,12 +15,12 @@ export enum FileAction {
 }
 
 interface FileActionContextType {
-  selectedFile: ArtifactoryEntity | null;
+  selectedFile: FileDto | null;
   currentAction: FileAction | null;
   isActionOpen: boolean;
-  openAction: (action: FileAction, file: ArtifactoryEntity) => void;
+  openAction: (action: FileAction, file: FileDto) => void;
   closeAction: () => void;
-  executeAction: (action: FileAction, file: ArtifactoryEntity) => void;
+  executeAction: (action: FileAction, file: FileDto) => void;
 }
 
 const FileActionContext = createContext<FileActionContextType | undefined>(undefined);
@@ -28,11 +30,11 @@ interface FileActionProviderProps {
 }
 
 export function FileActionProvider({ children }: FileActionProviderProps) {
-  const [selectedFile, setSelectedFile] = useState<ArtifactoryEntity | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileDto | null>(null);
   const [currentAction, setCurrentAction] = useState<FileAction | null>(null);
   const [isActionOpen, setIsActionOpen] = useState(false);
 
-  const openAction = (action: FileAction, file: ArtifactoryEntity) => {
+  const openAction = (action: FileAction, file: FileDto) => {
     setSelectedFile(file);
     setCurrentAction(action);
     setIsActionOpen(true);
@@ -44,9 +46,7 @@ export function FileActionProvider({ children }: FileActionProviderProps) {
     setIsActionOpen(false);
   };
 
-  const executeAction = (action: FileAction, file: ArtifactoryEntity) => {
-    console.log(`Executing action: ${action} on file: ${file.name}`);
-
+  const executeAction = (action: FileAction, file: FileDto) => {
     // Here you would implement the actual action logic
     switch (action) {
       case FileAction.RENAME:

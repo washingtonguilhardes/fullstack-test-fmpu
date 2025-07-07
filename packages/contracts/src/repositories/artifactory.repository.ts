@@ -13,11 +13,13 @@ export interface ArtifactoryRepository {
   findAllByUserIdAndPath(
     userId: string,
     path: string | null,
+    root?: boolean,
   ): Promise<ArtifactoryEntity[]>;
   findAllByUserIdPathAndName(
     userId: string,
     path: string,
     namePattern: string,
+    root?: boolean,
   ): Promise<ArtifactoryEntity[]>;
 }
 

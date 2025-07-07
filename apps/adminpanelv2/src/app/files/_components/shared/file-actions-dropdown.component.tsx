@@ -2,7 +2,7 @@
 
 import { MoreHorizontalIcon } from 'lucide-react';
 
-import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import { FileDto } from '@driveapp/contracts/entities/artifactory/dtos/file.dto';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,16 +13,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   IconDownload,
-  IconShare,
   IconEdit,
-  IconTrash,
-  IconFolder
+  IconFolder,
+  IconShare,
+  IconTrash
 } from '@tabler/icons-react';
 
-import { useFileActions, FileAction } from '../file-actions/file-actions.context';
+import { FileAction, useFileActions } from '../file-actions/file-actions.context';
 
 interface FileActionsDropdownComponentProps {
-  file: ArtifactoryEntity;
+  file: FileDto;
   className?: string;
   showOnHover?: boolean;
 }

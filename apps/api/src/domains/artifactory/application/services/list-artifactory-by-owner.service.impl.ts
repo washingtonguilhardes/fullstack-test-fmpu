@@ -2,6 +2,10 @@ import {
   ArtifactoryEntity,
   ArtifactoryType,
 } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import {
+  ListArtifactoryByOwnerDto,
+  ListArtifactoryParams,
+} from '@driveapp/contracts/entities/artifactory/dtos/list.dto';
 import { ArtifactoryRepository } from '@driveapp/contracts/repositories/artifactory.repository';
 
 import { ApplicationException } from '@/shared';
@@ -26,14 +30,9 @@ export class ListArtifactoryByOwnerServiceImpl
     private readonly getFolderByIdService: GetFolderByIdService,
   ) {}
 
-  async execute(params: {
-    ownerId: string;
-    pathId?: string;
-    artifactoryName?: string;
-  }): Promise<{
-    files: File[];
-    folders: Folder[];
-  }> {
+  async execute(
+    params: ListArtifactoryParams,
+  ): Promise<ListArtifactoryByOwnerDto> {
     try {
       let targetPath: Path = PathFactory.root(params.ownerId);
 
@@ -55,12 +54,14 @@ export class ListArtifactoryByOwnerServiceImpl
             params.ownerId,
             targetPath.getValue(),
             params.artifactoryName,
+            targetPath.isRoot(),
           );
       } else {
         artifactoryEntities =
           await this.artifactoryRepository.findAllByUserIdAndPath(
             params.ownerId,
             targetPath.getValue(),
+            targetPath.isRoot(),
           );
       }
 
@@ -73,7 +74,10 @@ export class ListArtifactoryByOwnerServiceImpl
         .filter((entity) => entity.type === ArtifactoryType.FOLDER)
         .map((entity) => FolderFactory.fromEntity(entity));
 
-      return { files, folders };
+      return {
+        files: files.map((file) => file.toJSON()),
+        folders: folders.map((folder) => folder.toJSON()),
+      };
     } catch (error) {
       throw ApplicationException.internalExecutionError(
         'List artifactory by owner',

@@ -1,15 +1,10 @@
-import { File, Folder, Path } from '../domain';
+import {
+  ListArtifactoryByOwnerDto,
+  ListArtifactoryParams,
+} from '@driveapp/contracts/entities/artifactory/dtos/list.dto';
 
 export interface ListArtifactoryByOwnerService {
-  execute(params: {
-    ownerId: string;
-    path?: Path;
-    pathId?: string;
-    artifactoryName?: string;
-  }): Promise<{
-    files: File[];
-    folders: Folder[];
-  }>;
+  execute(params: ListArtifactoryParams): Promise<ListArtifactoryByOwnerDto>;
 }
 
 export const ListArtifactoryByOwnerServiceRef = Symbol(

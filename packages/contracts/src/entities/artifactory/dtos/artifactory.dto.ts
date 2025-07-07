@@ -1,3 +1,5 @@
+import { ArtifactoryType } from '../artifactory.entity';
+
 export interface ArtifactoryDto {
   name: string;
   size?: number;
@@ -7,4 +9,6 @@ export interface ArtifactoryDto {
   updatedAt?: Date;
   id?: string;
   mimeType?: string;
+  path?: string;
+  type?: ArtifactoryType;
 }

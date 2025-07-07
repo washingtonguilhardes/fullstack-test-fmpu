@@ -41,7 +41,3 @@ export interface UpdateArtifactoryDto {
   access_url?: string;
   access_url_expires_at?: Date;
 }
-export interface ListArtifactoryByOwnerDto {
-  files: ArtifactoryEntity[];
-  folders: ArtifactoryEntity[];
-}

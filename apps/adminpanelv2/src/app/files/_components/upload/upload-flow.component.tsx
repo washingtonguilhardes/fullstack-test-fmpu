@@ -26,10 +26,12 @@ interface UploadResult {
 }
 
 export function UploadFlowComponent(props: {
+  parent?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onUpload?: () => void;
 }) {
-  const { open = false, onOpenChange } = props;
+  const { open = false, onOpenChange, onUpload, parent } = props;
 
   const [files, setFiles] = useState<File[]>([]);
   const [step, setStep] = useState<number>(1);
@@ -49,6 +51,9 @@ export function UploadFlowComponent(props: {
   const handleStep3 = (results: UploadResult[]) => {
     setUploadResults(results);
     setStep(3);
+    if (results.some(result => result.success)) {
+      onUpload?.();
+    }
   };
 
   const handleStep4 = () => {
@@ -81,6 +86,7 @@ export function UploadFlowComponent(props: {
 
         {step === 2 && (
           <UploadFileUploadComponent
+            parent={parent ?? ''}
             files={files}
             setFiles={setFiles}
             onNext={handleStep3}
@@ -91,7 +97,7 @@ export function UploadFlowComponent(props: {
           <UploadFileSuccessComponent
             files={files}
             setFiles={setFiles}
-            onNext={handleStep4}
+            onNext={handleReset}
             uploadResults={uploadResults}
           />
         )}
