@@ -4,7 +4,8 @@
     "baseUrl": "./",
     "outDir": "./dist",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"]
     },
     "types": ["jest", "node", "multer"]
   },

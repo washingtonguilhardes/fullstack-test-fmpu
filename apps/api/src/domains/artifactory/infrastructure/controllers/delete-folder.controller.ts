@@ -11,15 +11,15 @@ import { ApplicationException } from '@/shared';
 import { Controller, Delete, Inject, Param } from '@nestjs/common';
 
 import {
-  DeleteFileByIdService,
-  DeleteFileByIdServiceRef,
-} from '../../interfaces/delete-file-by-id.service';
+  DeleteFolderByIdService,
+  DeleteFolderByIdServiceRef,
+} from '../../interfaces';
 
-@Controller('/files/:id')
-export class DeleteFileController {
+@Controller('/folders/:id')
+export class DeleteFolderController {
   constructor(
-    @Inject(DeleteFileByIdServiceRef)
-    private readonly deleteFileByIdService: DeleteFileByIdService,
+    @Inject(DeleteFolderByIdServiceRef)
+    private readonly deleteFolderByIdService: DeleteFolderByIdService,
     @Inject(DecodeTokenServiceRef)
     private readonly decodeTokenService: DecodeTokenService,
     @Inject(GetUserByIdServiceRef)
@@ -40,8 +40,8 @@ export class DeleteFileController {
       throw ApplicationException.objectNotFound('User not found');
     }
 
-    await this.deleteFileByIdService.execute(fileId, user.getId());
+    await this.deleteFolderByIdService.execute(fileId, user.getId());
 
-    return { message: 'File deleted successfully' };
+    return { message: 'Folder deleted successfully' };
   }
 }

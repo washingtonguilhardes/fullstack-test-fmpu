@@ -18,6 +18,7 @@ export interface Folder {
   setPath(path: Path): void;
   setId(id: string): void;
   getId(): string;
+  getOwnerId(): string;
   validate(): void;
 }
 
@@ -130,6 +131,10 @@ export class FolderImpl implements Folder {
       artifactoryCount: 0,
       type: this.type,
     };
+  }
+
+  getOwnerId(): string {
+    return this.ownerId;
   }
 }
 

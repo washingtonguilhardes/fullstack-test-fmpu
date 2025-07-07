@@ -13,3 +13,4 @@ export * from './storage-file-adapter';
 export * from './get-folder-by-id.service';
 export * from './get-file-by-id.service';
 export * from './delete-file-by-id.service';
+export * from './delete-folder-by-id.service';

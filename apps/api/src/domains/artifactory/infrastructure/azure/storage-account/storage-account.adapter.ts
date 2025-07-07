@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 import path from 'path';
 
+import { ApplicationException } from '@/shared';
 import {
   BlobSASPermissions,
   BlobServiceClient,
@@ -54,7 +55,15 @@ export class AzureStorageAccountAdapter implements StorageFileAdapter {
     );
     const bucketPath = this.parseBucketPath(path);
     const blockBlobClient = containerClient.getBlockBlobClient(bucketPath);
-    await blockBlobClient.delete();
+    try {
+      await blockBlobClient.deleteIfExists();
+    } catch (error) {
+      console.error(error);
+      throw ApplicationException.externalResourceError(
+        'File removal',
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+    }
     return true;
   }
 

@@ -28,28 +28,27 @@ import {
   StoreFileUsecaseImpl,
 } from '../application';
 import { CreateNewFolderServiceImpl } from '../application/services/create-new-folder.service.impl';
+import { DeleteFolderByIdServiceImpl } from '../application/services/delete-folder-by-id.service.impl';
 import { ListFoldersByPathServiceImpl } from '../application/services/list-folders-by-path.service.impl';
 import {
-  StoreFileUsecaseRef,
-  StoreFileUsecase,
-  StorageFileAdapter,
   CreateNewFileService,
-  DeleteFileByIdService,
+  CreateNewFileServiceRef,
   DeleteFileByIdServiceRef,
   GetFileByIdService,
   GetFileByIdServiceRef,
-  RemoveFileService,
   GetFolderByIdService,
-  CreateNewFileServiceRef,
-  StorageFileAdapterRef,
-  RemoveFileServiceRef,
   GetFolderByIdServiceRef,
+  ListArtifactoryByOwnerServiceRef,
   ListFilesByPathService,
   ListFilesByPathServiceRef,
-  ListArtifactoryByOwnerService,
-  ListArtifactoryByOwnerServiceRef,
+  RemoveFileService,
+  RemoveFileServiceRef,
+  StorageFileAdapter,
+  StorageFileAdapterRef,
+  StoreFileUsecaseRef,
 } from '../interfaces';
 import { CreateNewFolderServiceRef } from '../interfaces/create-new-folder.service';
+import { DeleteFolderByIdServiceRef } from '../interfaces/delete-folder-by-id.service';
 import { GetFolderByPathServiceRef } from '../interfaces/get-folder-by-path.service';
 import {
   ListFoldersByPathService,
@@ -57,6 +56,7 @@ import {
 } from '../interfaces/list-folders-by-path.service';
 import { AzureModule } from './azure/azure.module';
 import { DeleteFileController } from './controllers/delete-file.controller';
+import { DeleteFolderController } from './controllers/delete-folder.controller';
 import { GetFolderByPathController } from './controllers/get-folder-by-path.controller';
 import { ListArtifactoryByOwnerController } from './controllers/list-artifactory-by-owner.controller';
 import { NewFolderController } from './controllers/new-folder.controller';
@@ -75,6 +75,7 @@ import {
     ListArtifactoryByOwnerController,
     GetFolderByPathController,
     DeleteFileController,
+    DeleteFolderController,
   ],
   imports: [
     SecurityModule,
@@ -223,6 +224,37 @@ import {
       inject: [
         ArtifactoryRepositoryRef,
         ListArtifactoryByOwnerServiceRef,
+        OwnershipValidationServiceRef,
+      ],
+    },
+    {
+      provide: DeleteFolderByIdServiceRef,
+      useFactory: (
+        getFolderByIdService,
+        listFilesByPathService,
+        listFoldersByPathService,
+        deleteFileByIdService,
+        removeFolderService,
+        ownershipValidationService,
+      ) => {
+        const service = new DeleteFolderByIdServiceImpl(
+          getFolderByIdService,
+          listFilesByPathService,
+          listFoldersByPathService,
+          deleteFileByIdService,
+          removeFolderService,
+          ownershipValidationService,
+        );
+        // inject itself for recursion
+        service['deleteFolderByIdService'] = service;
+        return service;
+      },
+      inject: [
+        GetFolderByIdServiceRef,
+        ListFilesByPathServiceRef,
+        ListFoldersByPathServiceRef,
+        DeleteFileByIdServiceRef,
+        RemoveFileServiceRef,
         OwnershipValidationServiceRef,
       ],
     },
