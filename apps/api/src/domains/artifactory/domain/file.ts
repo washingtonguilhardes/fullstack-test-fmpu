@@ -16,6 +16,7 @@ export interface File {
   getPath(): Path;
   getMimeType(): string;
   getChecksum(): string;
+  getOwnerId(): string;
   validate(): void;
   toJSON(): FileDto;
   toEntity(): ArtifactoryEntity;
@@ -54,7 +55,12 @@ export class FileImpl implements File {
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
     this.checksum = data.checksum;
+    this.type = data.type;
     this.mimeType = data.mimeType || 'application/octet-stream';
+  }
+
+  getOwnerId(): string {
+    return this.ownerId;
   }
 
   getChecksum(): string {
@@ -165,6 +171,7 @@ export class FileImpl implements File {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       checksum: this.checksum,
+      type: this.type,
     };
   }
 
@@ -197,6 +204,7 @@ export class FileFactory {
       checksum: entity.checksum,
       mimeType: entity.mimeType,
       size: entity.size,
+      type: entity.type,
     });
     file.setPath(PathFactory.fromEntity(entity));
     return file;

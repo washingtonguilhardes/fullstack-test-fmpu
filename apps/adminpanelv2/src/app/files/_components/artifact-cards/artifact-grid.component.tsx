@@ -1,11 +1,12 @@
 'use client';
 
 import { ArtifactoryEntity } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import { ArtifactoryDto } from '@driveapp/contracts/entities/artifactory/dtos/artifactory.dto';
 
 import { ArtifactCardComponent } from './artifact-card.component';
 
 interface ArtifactGridComponentProps {
-  files: ArtifactoryEntity[];
+  files: ArtifactoryDto[];
 }
 
 export function ArtifactGridComponent({ files = [] }: ArtifactGridComponentProps) {
@@ -39,7 +40,7 @@ export function ArtifactGridComponent({ files = [] }: ArtifactGridComponentProps
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
       {files.map(file => (
-        <ArtifactCardComponent key={file._id} file={file} />
+        <ArtifactCardComponent key={file.id} file={file} />
       ))}
     </div>
   );

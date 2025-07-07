@@ -6,7 +6,7 @@ export interface ListArtifactoryByOwnerDto {
   folders: FolderDto[];
 }
 
-export interface ListArtifctoryParams {
+export interface ListArtifactoryParams {
   ownerId: string;
   pathId?: string;
   artifactoryName?: string;

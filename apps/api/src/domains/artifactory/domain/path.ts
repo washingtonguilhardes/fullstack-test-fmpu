@@ -7,11 +7,15 @@ export interface Path {
   getRelativePath(): string;
   equals(path: Path): boolean;
   join(path: Path): Path;
+  isRoot(): boolean;
   toJSON(): string;
 }
 
 export class PathImpl implements Path {
-  constructor(private path: string) {}
+  constructor(
+    private path: string,
+    private root: boolean = false,
+  ) {}
 
   join(path: Path): Path {
     this.path = join(path.getValue(), this.path);
@@ -36,6 +40,10 @@ export class PathImpl implements Path {
 
   getValue(): string {
     return this.path;
+  }
+
+  isRoot(): boolean {
+    return this.root;
   }
 }
 
@@ -78,6 +86,6 @@ export class PathFactory {
   }
 
   static root(ownerId: string): Path {
-    return new PathImpl(`/${ownerId}`);
+    return new PathImpl(`/${ownerId}`, true);
   }
 }

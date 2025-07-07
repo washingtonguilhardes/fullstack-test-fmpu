@@ -45,7 +45,7 @@ export class NewFolderController {
       name: body.name,
       ownerId: tokenPayload.getSubject(),
       artifactoryCount: 0,
-      parentId: body.parentId,
+      parentId: body.parentId ?? null,
     });
   }
 }

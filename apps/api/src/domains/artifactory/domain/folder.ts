@@ -105,15 +105,15 @@ export class FolderImpl implements Folder {
       path: this.path.getValue(),
       size: this.size,
       userId: this.ownerId,
-      parentId: this.parentId,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
+    entity.parentId = this.parentId || null;
+
     if (this.id) {
       entity._id = this.id;
     }
-    console.log(entity);
     return entity;
   }
 
@@ -128,6 +128,7 @@ export class FolderImpl implements Folder {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       artifactoryCount: 0,
+      type: this.type,
     };
   }
 }
@@ -142,6 +143,7 @@ export class FolderFactory {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       artifactoryCount: 0,
+      type: entity.type,
     });
     folder.setPath(PathFactory.fromEntity(entity));
     return folder;

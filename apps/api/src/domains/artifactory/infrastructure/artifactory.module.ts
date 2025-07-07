@@ -7,13 +7,21 @@ import {
 
 import { AuthenticationModule } from '@/domains/authentication/infrastructure/nest/authentication.module';
 import { UserModule } from '@/domains/users';
-import { ChecksumServiceImpl } from '@/shared';
+import {
+  ChecksumServiceImpl,
+  OwnershipValidationService,
+  OwnershipValidationServiceRef,
+  SecurityModule,
+} from '@/shared';
 import { Module } from '@nestjs/common';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 
 import {
   CreateNewFileServiceImpl,
+  DeleteFileByIdServiceImpl,
+  GetFileByIdServiceImpl,
   GetFolderByIdServiceImpl,
+  GetFolderByPathServiceImpl,
   ListArtifactoryByOwnerServiceImpl,
   ListFilesByPathServiceImpl,
   RemoveFileServiceImpl,
@@ -26,6 +34,10 @@ import {
   StoreFileUsecase,
   StorageFileAdapter,
   CreateNewFileService,
+  DeleteFileByIdService,
+  DeleteFileByIdServiceRef,
+  GetFileByIdService,
+  GetFileByIdServiceRef,
   RemoveFileService,
   GetFolderByIdService,
   CreateNewFileServiceRef,
@@ -38,11 +50,14 @@ import {
   ListArtifactoryByOwnerServiceRef,
 } from '../interfaces';
 import { CreateNewFolderServiceRef } from '../interfaces/create-new-folder.service';
+import { GetFolderByPathServiceRef } from '../interfaces/get-folder-by-path.service';
 import {
   ListFoldersByPathService,
   ListFoldersByPathServiceRef,
 } from '../interfaces/list-folders-by-path.service';
 import { AzureModule } from './azure/azure.module';
+import { DeleteFileController } from './controllers/delete-file.controller';
+import { GetFolderByPathController } from './controllers/get-folder-by-path.controller';
 import { ListArtifactoryByOwnerController } from './controllers/list-artifactory-by-owner.controller';
 import { NewFolderController } from './controllers/new-folder.controller';
 import { UploadController } from './controllers/upload.controller';
@@ -58,8 +73,11 @@ import {
     UploadController,
     NewFolderController,
     ListArtifactoryByOwnerController,
+    GetFolderByPathController,
+    DeleteFileController,
   ],
   imports: [
+    SecurityModule,
     MongooseModule.forFeature([
       { name: ArtifactoryModelName, schema: ArtifactoryMongooseSchema },
     ]),
@@ -78,6 +96,12 @@ import {
       provide: GetFolderByIdServiceRef,
       useFactory: (artifactoryRepository: ArtifactoryRepository) =>
         new GetFolderByIdServiceImpl(artifactoryRepository),
+      inject: [ArtifactoryRepositoryRef],
+    },
+    {
+      provide: GetFileByIdServiceRef,
+      useFactory: (artifactoryRepository: ArtifactoryRepository) =>
+        new GetFileByIdServiceImpl(artifactoryRepository),
       inject: [ArtifactoryRepositoryRef],
     },
     {
@@ -109,18 +133,48 @@ import {
       useFactory: (
         artifactoryRepository: ArtifactoryRepository,
         listFoldersByPathService: ListFoldersByPathService,
+        ownershipValidationService: OwnershipValidationService,
+        getFolderByIdService: GetFolderByIdService,
       ) =>
         new CreateNewFolderServiceImpl(
           artifactoryRepository,
           listFoldersByPathService,
+          ownershipValidationService,
+          getFolderByIdService,
         ),
-      inject: [ArtifactoryRepositoryRef, ListFoldersByPathServiceRef],
+      inject: [
+        ArtifactoryRepositoryRef,
+        ListFoldersByPathServiceRef,
+        OwnershipValidationServiceRef,
+        GetFolderByIdServiceRef,
+      ],
     },
     {
       provide: RemoveFileServiceRef,
       useFactory: (artifactoryRepository: ArtifactoryRepository) =>
         new RemoveFileServiceImpl(artifactoryRepository),
       inject: [ArtifactoryRepositoryRef],
+    },
+    {
+      provide: DeleteFileByIdServiceRef,
+      useFactory: (
+        getFileByIdService: GetFileByIdService,
+        removeFileService: RemoveFileService,
+        storageFileAdapter: StorageFileAdapter,
+        ownershipValidationService: OwnershipValidationService,
+      ) =>
+        new DeleteFileByIdServiceImpl(
+          getFileByIdService,
+          removeFileService,
+          storageFileAdapter,
+          ownershipValidationService,
+        ),
+      inject: [
+        GetFileByIdServiceRef,
+        RemoveFileServiceRef,
+        StorageFileAdapterRef,
+        OwnershipValidationServiceRef,
+      ],
     },
     {
       provide: CreateNewFileServiceRef,
@@ -154,6 +208,22 @@ import {
         CreateNewFileServiceRef,
         RemoveFileServiceRef,
         GetFolderByIdServiceRef,
+      ],
+    },
+    {
+      provide: GetFolderByPathServiceRef,
+      useFactory: (
+        artifactoryRepository: ArtifactoryRepository,
+        ownershipValidationService: OwnershipValidationService,
+      ) =>
+        new GetFolderByPathServiceImpl(
+          artifactoryRepository,
+          ownershipValidationService,
+        ),
+      inject: [
+        ArtifactoryRepositoryRef,
+        ListArtifactoryByOwnerServiceRef,
+        OwnershipValidationServiceRef,
       ],
     },
   ],

@@ -4,21 +4,20 @@ import { format } from 'date-fns';
 
 import Link from 'next/link';
 
-import {
-  ArtifactoryEntity,
-  ArtifactoryType
-} from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import { ArtifactoryType } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import { ArtifactoryDto } from '@driveapp/contracts/entities/artifactory/dtos/artifactory.dto';
+import { FileDto } from '@driveapp/contracts/entities/artifactory/dtos/file.dto';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { FileActionsDropdownComponent, FileIconComponent } from '../shared';
 
 interface ArtifactCardComponentProps {
-  file: ArtifactoryEntity;
+  file: ArtifactoryDto;
 }
 
 export function ArtifactCardComponent({ file }: ArtifactCardComponentProps) {
-  const { name, path, type, size, created_at: createdAt } = file;
+  const { name, path, size, createdAt, type } = file;
   const isFolder = type === ArtifactoryType.FOLDER;
 
   const formatFileSize = (bytes: number) => {
@@ -71,7 +70,9 @@ export function ArtifactCardComponent({ file }: ArtifactCardComponentProps) {
               </CardTitle>
             </div>
           </div>
-          <FileActionsDropdownComponent file={file} showOnHover={true} />
+          {file.type === ArtifactoryType.FILE && (
+            <FileActionsDropdownComponent file={file as FileDto} showOnHover={true} />
+          )}
         </div>
       </CardHeader>
 

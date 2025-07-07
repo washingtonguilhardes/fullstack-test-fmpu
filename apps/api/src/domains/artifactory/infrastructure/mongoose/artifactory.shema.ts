@@ -20,7 +20,7 @@ export class ArtifactoryMongoose
   @Prop({ required: true })
   userId: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: null, index: true, ref: 'Artifactory' })
   parentId?: string;
 
   @Prop({ required: true, index: true })

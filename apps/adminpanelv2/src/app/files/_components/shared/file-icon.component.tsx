@@ -6,6 +6,7 @@ import {
   ArtifactoryEntity,
   ArtifactoryType
 } from '@driveapp/contracts/entities/artifactory/artifactory.entity';
+import { ArtifactoryDto } from '@driveapp/contracts/entities/artifactory/dtos/artifactory.dto';
 
 import {
   IconArchive,
@@ -18,7 +19,7 @@ import {
 } from '@tabler/icons-react';
 
 interface FileIconComponentProps {
-  file: ArtifactoryEntity;
+  file: ArtifactoryDto;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }

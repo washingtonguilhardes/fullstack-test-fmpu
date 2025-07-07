@@ -29,8 +29,9 @@ export function UploadFileUploadComponent(props: {
   files: File[];
   setFiles: (files: File[]) => void;
   onNext: (results: UploadResult[]) => void;
+  parent: string;
 }) {
-  const { files, setFiles, onNext } = props;
+  const { files, setFiles, onNext, parent } = props;
 
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -61,7 +62,7 @@ export function UploadFileUploadComponent(props: {
         formData.append('originalName', file.name);
         formData.append('mimeType', file.type);
         formData.append('size', file.size.toString());
-
+        formData.append('parentId', parent);
         await restClient.post('/artifactory/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -93,7 +94,7 @@ export function UploadFileUploadComponent(props: {
     setUploadResults(results);
     setUploading(false);
     setProgress(100);
-  }, [files]);
+  }, [files, parent]);
 
   const handleNext = () => {
     onNext(uploadResults);
@@ -109,9 +110,12 @@ export function UploadFileUploadComponent(props: {
 
   const successfulUploads = uploadResults.filter(result => result.success).length;
   const failedUploads = uploadResults.filter(result => !result.success).length;
-  useEffect(() => {
-    uploadFiles();
-  }, [uploadFiles]);
+
+  // useEffect(() => {
+  //   if (files.length > 0) {
+  //     uploadFiles();
+  //   }
+  // }, [files, uploadFiles]);
 
   return (
     <div className="space-y-6">

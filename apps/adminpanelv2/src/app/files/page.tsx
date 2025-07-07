@@ -1,3 +1,5 @@
+import { cookies } from 'next/headers';
+
 import {
   ArtifactoryEntity,
   ArtifactoryType
@@ -88,17 +90,6 @@ const files: ArtifactoryEntity[] = [
   }
 ];
 
-export default async function DashboardPage(props: {
-  searchParams: Promise<{ segment: string; preview: string }>;
-}) {
-  const { searchParams } = props;
-  const { segment, preview } = await searchParams;
-
-  return (
-    <ArtifactListComponent
-      files={files}
-      segment={segment ?? preview ?? ''}
-      preview={Boolean(preview)}
-    />
-  );
+export default async function DashboardPage() {
+  return <ArtifactListComponent />;
 }

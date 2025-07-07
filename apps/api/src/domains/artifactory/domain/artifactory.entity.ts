@@ -1,5 +1,3 @@
-import { Path } from 'mongoose';
-
 import { ArtifactoryDto } from '@driveapp/contracts/entities/artifactory/dtos/artifactory.dto';
 import { FileDto } from '@driveapp/contracts/entities/artifactory/dtos/file.dto';
 import { FolderDto } from '@driveapp/contracts/entities/artifactory/dtos/folder.dto';
