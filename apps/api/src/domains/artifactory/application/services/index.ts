@@ -11,3 +11,4 @@ export { RemoveFolderServiceImpl } from './remove-folder.service.impl';
 export { UploadFileServiceImpl } from './upload-file.service.impl';
 export { GetFolderByPathServiceImpl } from './get-folder-by-path.service.impl';
 export { DeleteFileByIdServiceImpl } from './delete-file-by-id.service.impl';
+export { DeleteFolderByIdServiceImpl } from './delete-folder-by-id.service.impl';

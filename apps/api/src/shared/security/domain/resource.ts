@@ -11,6 +11,6 @@ export class ResourceImpl implements Resource {
   }
 
   isSourceAllowed(source: string): boolean {
-    return this.sources.includes(source);
+    return this.sources.includes(String(source));
   }
 }

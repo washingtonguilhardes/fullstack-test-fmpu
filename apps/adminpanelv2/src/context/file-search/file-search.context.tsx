@@ -17,7 +17,7 @@ const FileSearchContext = createContext<{
   setSearch: (search: string) => void;
   setSegment: (segment: string) => void;
   folder?: FolderDto | null;
-  fetchFolder: (folderPath: string) => void;
+  fetchFolder: (folderPath?: string) => void;
 }>({
   segment: '',
   search: '',
@@ -54,22 +54,14 @@ export const FileSearchProviderImpl = ({ children }: { children: React.ReactNode
   });
 
   const fetchFolder = useCallback(
-    async (folderPath: string) => {
-      setSegment(folderPath);
-      refetch();
-      if (!user || segment === '/' || segment === `/${user.id}`) {
-        return;
+    async (folderPath?: string) => {
+      if (folderPath) {
+        setSegment(folderPath);
       }
-      console.log({ segment, user });
+      await refetch();
     },
-    [user]
+    [refetch]
   );
-
-  // useEffect(() => {
-  //   fetchFolder();
-  // }, []);
-
-  console.log({ segment });
 
   return (
     <FileSearchContext.Provider

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { ArtifactoryDto } from '@driveapp/contracts/entities/artifactory/dtos/artifactory.dto';
@@ -11,8 +12,12 @@ import {
   CompoundActionButton,
   type ActionType
 } from '@/components/molecules/compound-action-button';
+import { Button } from '@/components/ui/button';
+import { useAccount } from '@/context/account/account.context';
 import { useFileSearch } from '@/context/file-search/file-search.context';
 import { restClient } from '@/lib/http/rest.client';
+import { cn } from '@/lib/utils';
+import { IconChevronRight, IconHome } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { ArtifactGridComponent } from '../artifact-cards';
@@ -24,7 +29,8 @@ import { ArtifactsTable } from './table';
 import { ViewMode, ViewToggleComponent } from './view-toggle.component';
 
 export function ArtifactListComponent() {
-  const { folder, segment } = useFileSearch();
+  const { user } = useAccount();
+  const { folder, segment, setSegment } = useFileSearch();
   const [uploadFlow, setUploadFlow] = useState<boolean>(false);
   const [createNewFolderFlow, setCreateNewFolderFlow] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<ViewMode>('table');
@@ -34,7 +40,7 @@ export function ArtifactListComponent() {
   const router = useRouter();
 
   const { data, isLoading, refetch } = useQuery<ListArtifactoryByOwnerDto>({
-    queryKey: ['files', folder?.id, search],
+    queryKey: ['files', folder?.id, search, segment],
     queryFn: () => {
       return restClient
         .get<ListArtifactoryByOwnerDto>('/artifactory/list-by-owner', {
@@ -57,13 +63,53 @@ export function ArtifactListComponent() {
     if (folder?.id && !isLoading) {
       refetch();
     }
-  }, [folder]);
+  }, [folder, isLoading]);
+
+  const breadcrumb = useMemo(() => {
+    const segments = segment.split('/').filter(Boolean);
+    return segments.map((v, index) => {
+      const isRoot = v === user?.id;
+      return {
+        key: `breadcrumb-[${v}-${index}]`,
+        label: isRoot ? '' : v,
+        path: isRoot ? '' : `/${segments.slice(0, index + 1).join('/')}`,
+        isLast: index === segments.length - 1,
+        isRoot
+      };
+    });
+  }, [segment]);
 
   return (
     <FileActionProvider>
       <div className="flex justify-between items-center mb-6 flex-col md:flex-row gap-4 w-full">
         <div className="flex items-center space-x-4 gap-4 w-full md:w-auto justify-between md:flex-1">
-          <div className="text-2xl font-bold w-full flex-1 ">Files {segment}</div>
+          <div className="text-2xl font-bold w-full flex-1 ">
+            <div className="flex items-center gap-2">
+              {breadcrumb.map(v => {
+                return (
+                  <Fragment key={v.key}>
+                    <Link
+                      href={v.isRoot ? '/files' : `/files?segment=${v.path}`}
+                      onClick={() => {
+                        if (!v.isLast) {
+                          setSegment(v.path);
+                        }
+                      }}
+                      className={cn(
+                        'flex items-center gap-2',
+                        !v.isLast
+                          ? 'text-primary'
+                          : 'text-muted-foreground  pointer-events-none'
+                      )}
+                    >
+                      {v.isRoot ? <IconHome /> : <IconChevronRight />}
+                      {v.label}
+                    </Link>
+                  </Fragment>
+                );
+              })}
+            </div>
+          </div>
           <ViewToggleComponent viewMode={viewMode} onViewModeChange={setViewMode} />
         </div>
         <div className="flex items-center space-x-4 gap-4 w-full md:w-auto">
@@ -97,11 +143,16 @@ export function ArtifactListComponent() {
             setCreateNewFolderFlow(false);
             if (path) {
               router.push(`/files?segment=${path}`);
+              setSegment(path);
             }
           }}
         />
       )}
-      <FileActionDialogsComponent />
+      <FileActionDialogsComponent
+        onReloadFileList={() => {
+          refetch();
+        }}
+      />
       {viewMode === 'table' ? (
         <ArtifactsTable files={artifacts} />
       ) : (
